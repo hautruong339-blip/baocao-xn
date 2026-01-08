@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Báo Cáo Hiệu Suất - BV Ung Bướu (Bảo Mật)</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root { --bv-blue: #00529b; --bv-light: #f8fbff; }
+        body { background-color: #e9ecef; font-family: 'Segoe UI', Tahoma, sans-serif; padding: 20px; }
+        .report-card { max-width: 1050px; margin: auto; background: white; border-radius: 8px; box-shadow: 0 5px 20px rgba(0,0,0,0.15); padding: 40px; position: relative; }
+        
+        /* Header chuẩn bệnh viện */
+        .hospital-brand { border-bottom: 2px solid var(--bv-blue); margin-bottom: 30px; padding-bottom: 10px; }
+        .hospital-name { color: var(--bv-blue); font-weight: bold; font-size: 1.4rem; margin: 0; }
+        .report-title { text-align: center; text-transform: uppercase; font-weight: 800; color: #333; margin: 20px 0; letter-spacing: 1px; }
+
+        /* Bảng dữ liệu */
+        .table thead th { background-color: #f1f3f5; color: #333; text-align: center; border: 1px solid #dee2e6; font-size: 0.85rem; }
+        .table td { border: 1px solid #dee2e6; vertical-align: middle; }
+        
+        /* Ô nhập liệu */
+        .input-number { 
+            width: 100%; 
+            border: none; 
+            text-align: right; 
+            font-weight: bold; 
+            background: transparent;
+            font-size: 1.1rem;
+        }
+        .input-number:focus { outline: none; background: #fffde7; }
+        .input-number[readonly] { color: #555; cursor: default; }
+
+        /* Vùng điều khiển bảo mật */
+        .lock-panel { background: #fff9c4; padding: 10px 20px; border-radius: 5px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; border: 1px solid #ffe57f; }
+        
+        /* Chữ ký */
+        .signature-section { margin-top: 50px; display: flex; justify-content: space-between; padding: 0 50px; }
+        .sig-box { text-align: center; min-width: 200px; }
+        
+        @media print {
+            .lock-panel, .btn-save { display: none !important; }
+            body { background: white; padding: 0; }
+            .report-card { box-shadow: none; border: none; width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="report-card">
+    <div class="hospital-brand">
+        <p class="hospital-name">SỞ Y TẾ TP. HỒ CHÍ MINH</p>
+        <p class="hospital-name">BỆNH VIỆN UNG BƯỚU</p>
+        <p class="small mb-0">KHOA: XÉT NGHIỆM</p>
+    </div>
+
+    <h3 class="report-title">BẢNG BÁO CÁO HIỆU SUẤT XÉT NGHIỆM HẰNG NGÀY</h3>
+
+    <div class="lock-panel no-print">
+        <div>
+            <label class="fw-bold me-2">Ngày xem:</label>
+            <input type="date" id="datePicker" onchange="loadData()" class="border-0 bg-transparent fw-bold">
+        </div>
+        <div id="authArea">
+            <span id="lockStatus" class="me-2 text-danger"><i class="bi bi-lock-fill"></i> Đang khóa (Chỉ xem)</span>
+            <input type="password" id="passInput" placeholder="Nhập MK để sửa" class="form-control form-control-sm d-inline-block" style="width: 130px;">
+            <button onclick="unlock()" class="btn btn-dark btn-sm">Mở khóa</button>
+        </div>
+        <div id="editArea" style="display: none;">
+            <span class="text-success fw-bold me-3">✓ Chế độ chỉnh sửa</span>
+            <button onclick="saveData()" class="btn btn-primary btn-sm fw-bold">LƯU DỮ LIỆU</button>
+            <button onclick="lock()" class="btn btn-outline-secondary btn-sm">Đóng</button>
+        </div>
+    </div>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th width="5%">STT</th>
+                <th width="12%">MÃ MÁY</th>
+                <th width="63%">TÊN HỆ THỐNG / THIẾT BỊ XÉT NGHIỆM</th>
+                <th width="20%">SỐ LƯỢNG TEST</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+        <tfoot>
+            <tr class="fw-bold bg-light">
+                <td colspan="3" class="text-end px-3">TỔNG CỘNG</td>
+                <td id="totalValue" class="text-end text-danger fs-5 px-3">0</td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <div class="signature-section">
+        <div class="sig-box">
+            <p class="fw-bold">Người lập bảng</p>
+            <br><br><br>
+            <p>....................................</p>
+        </div>
+        <div class="sig-box">
+            <p><i>Ngày ...... tháng ...... năm 20...</i></p>
+            <p class="fw-bold">Trưởng khoa Xét nghiệm</p>
+            <br><br><br>
+            <p>....................................</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    const PASSWORD = "1"; // BẠN CÓ THỂ ĐỔI MẬT KHẨU TẠI ĐÂY
+    let isEditing = false;
+
+    const machines = [
+        { id: "PT100674", ten: "Hệ thống xét nghiệm sinh hóa - miễn dịch tự động và thiết bị hỗ trợ" },
+        { id: "PT100673", ten: "Máy đếm tế bào dòng chảy (flow cytometry) (máy phân tích tế bào dòng chảy)" },
+        { id: "PT100661", ten: "Máy phân tích huyết học tự động ≥ 50 thông số (máy phân tích huyết học)" },
+        { id: "PT100663", ten: "Máy phân tích miễn dịch tự động ≥ 150 test/giờ (máy phân tích miễn dịch)" }
+    ];
+
+    document.getElementById('datePicker').valueAsDate = new Date();
+
+    function unlock() {
+        const pass = document.getElementById('passInput').value;
+        if(pass === PASSWORD) {
+            isEditing = true;
+            document.getElementById('authArea').style.display = "none";
+            document.getElementById('editArea').style.display = "block";
+            loadData();
+        } else {
+            alert("Mật khẩu không đúng!");
+        }
+    }
+
+    function lock() {
+        isEditing = false;
+        document.getElementById('authArea').style.display = "block";
+        document.getElementById('editArea').style.display = "none";
+        document.getElementById('passInput').value = "";
+        loadData();
+    }
+
+    function loadData() {
+        const date = document.getElementById('datePicker').value;
+        const db = JSON.parse(localStorage.getItem('bv_secure_data')) || {};
+        const dayData = db[date] || {};
+        
+        const body = document.getElementById('tableBody');
+        body.innerHTML = "";
+        let total = 0;
+
+        machines.forEach((m, i) => {
+            const val = dayData[m.id] || "";
+            if(val) total += parseInt(val);
+
+            let row = `<tr>
+                <td class="text-center">${i+1}</td>
+                <td class="text-center"><code>${m.id}</code></td>
+                <td class="px-3">${m.ten}</td>
+                <td>
+                    <input type="number" 
+                           ${!isEditing ? 'readonly' : ''} 
+                           oninput="this.value = this.value.replace(/[^0-9]/g, ''); calculateTotal();" 
+                           id="input-${m.id}" 
+                           class="input-number" 
+                           value="${val}" 
+                           placeholder="0">
+                </td>
+            </tr>`;
+            body.innerHTML += row;
+        });
+        document.getElementById('totalValue').innerText = total.toLocaleString('vi-VN');
+    }
+
+    function calculateTotal() {
+        let total = 0;
+        machines.forEach(m => {
+            const val = document.getElementById(`input-${m.id}`).value;
+            if(val) total += parseInt(val);
+        });
+        document.getElementById('totalValue').innerText = total.toLocaleString('vi-VN');
+    }
+
+    function saveData() {
+        const date = document.getElementById('datePicker').value;
+        const db = JSON.parse(localStorage.getItem('bv_secure_data')) || {};
+        db[date] = {};
+
+        machines.forEach(m => {
+            const val = document.getElementById(`input-${m.id}`).value;
+            db[date][m.id] = val;
+        });
+
+        localStorage.setItem('bv_secure_data', JSON.stringify(db));
+        alert("Đã lưu dữ liệu thành công!");
+        lock();
+    }
+
+    loadData();
+</script>
+
+</body>
+</html>
