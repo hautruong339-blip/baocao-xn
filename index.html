@@ -113,7 +113,6 @@
     const PASSWORD = "1"; 
     let isEditing = false;
 
-    // GIỮ Y CHANG DỮ LIỆU TÊN MÁY BAN ĐẦU
     const machines = [
         { id: "PT100674", ten: "Hệ thống xét nghiệm sinh hóa - miễn dịch tự động và thiết bị hỗ trợ", model: "24d" },
         { id: "PT100673", ten: "Máy đếm tế bào dòng chảy (flow cytometry) (máy phân tích tế bào dòng chảy)", model: "NAVIOS (8 COLOR/2LASER)" },
@@ -121,7 +120,6 @@
         { id: "PT100663", ten: "Máy phân tích miễn dịch tự động ≥ 150 test/giờ (máy phân tích miễn dịch)", model: "DxI 800" }
     ];
 
-    // LẮNG NGHE PHÍM TẮT
     document.addEventListener('keydown', function(e) {
         if (e.key === "Enter" && document.activeElement.id === "passInput") {
             unlock();
@@ -152,6 +150,21 @@
         loadData();
     }
 
+    // Hàm xử lý khi click chuột vào ô nhập (Xóa số 0)
+    function clearIfZero(input) {
+        if (input.value === "0") {
+            input.value = "";
+        }
+    }
+
+    // Hàm xử lý khi rời khỏi ô nhập (Nếu trống thì điền lại số 0)
+    function restoreIfEmpty(input) {
+        if (input.value === "") {
+            input.value = "0";
+        }
+        calculateTotal();
+    }
+
     function loadData() {
         const date = document.getElementById('datePicker').value;
         if (!date) return;
@@ -167,7 +180,6 @@
             let total = 0;
 
             machines.forEach((m, i) => {
-                // Nếu không có dữ liệu (undefined hoặc trống) thì hiển thị số 0
                 let val = data[m.id];
                 if (val === undefined || val === "") val = "0";
                 
@@ -180,7 +192,10 @@
                     <td class="text-center fw-bold">${m.model}</td>
                     <td>
                         <input type="number" ${!isEditing ? 'readonly' : ''} 
-                               oninput="calculateTotal()" id="input-${m.id}" 
+                               onfocus="clearIfZero(this)" 
+                               onblur="restoreIfEmpty(this)"
+                               oninput="calculateTotal()" 
+                               id="input-${m.id}" 
                                class="input-number" value="${val}">
                     </td>
                 </tr>`;
@@ -192,9 +207,12 @@
     function calculateTotal() {
         let total = 0;
         machines.forEach(m => {
-            let val = document.getElementById(`input-${m.id}`).value;
-            if(!val) val = 0;
-            total += parseInt(val);
+            const input = document.getElementById(`input-${m.id}`);
+            if (input) {
+                let val = input.value;
+                if(!val) val = 0;
+                total += parseInt(val);
+            }
         });
         document.getElementById('totalValue').innerText = total.toLocaleString('vi-VN');
     }
