@@ -13,64 +13,24 @@
 
     <style>
         :root { --bv-blue: #00529b; --bv-green: #2ecc71; }
-        
         body { background-color: #f4f7f9; font-family: "Times New Roman", Times, serif; padding: 20px; color: #333; }
-        
-        .report-card { 
-            max-width: 1000px; margin: auto; background: white; 
-            border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); 
-            padding: 40px; border-top: 10px solid var(--bv-blue); 
-        }
-
+        .report-card { max-width: 1000px; margin: auto; background: white; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); padding: 40px; border-top: 10px solid var(--bv-blue); }
         .hospital-name { color: var(--bv-blue); font-weight: bold; font-size: 1.4rem; margin: 0; text-transform: uppercase; }
         .dept-name { color: var(--bv-green); font-weight: bold; font-size: 1.1rem; margin-top: 5px; }
-
-        .report-title { 
-            text-align: center; font-weight: bold; margin: 30px 0; 
-            font-size: 1.8rem; text-transform: uppercase; color: #000;
-        }
-
+        .report-title { text-align: center; font-weight: bold; margin: 30px 0; font-size: 1.8rem; text-transform: uppercase; color: #000; }
         .table { border: 1.5px solid #000; font-size: 1.1rem; }
         .table thead th { background-color: #f8f9fa; color: #000; border: 1px solid #000; padding: 12px; text-align: center; }
         .table td { border: 1px solid #000; vertical-align: middle; padding: 8px; }
         
-        .input-number { 
-            width: 100%; border: none; text-align: right; 
-            font-weight: bold; background: #fdfdfd; font-size: 1.4rem; 
-            color: var(--bv-blue); padding: 5px 10px; border-radius: 6px;
-        }
-        .input-number:focus { outline: none; background: #fffde7; }
-
-        /* Vùng 7 ô mini - Đã điều chỉnh dài ra vừa khung xanh */
-        #specialInputArea { 
-            background: rgba(0, 82, 155, 0.05); padding: 20px; 
-            border-radius: 10px; margin-bottom: 25px; border: 2px solid var(--bv-blue);
-        }
-        .mini-input-group { 
-            display: grid; 
-            grid-template-columns: repeat(7, 1fr); /* Chia đều 7 cột bằng nhau */
-            gap: 12px; /* Khoảng cách giữa các ô */
-        }
-        .mini-input { 
-            width: 100% !important; /* Dài ra chiếm hết diện tích ô lưới */
-            height: 50px !important; 
-            font-size: 1.4rem !important; 
-            font-weight: bold; 
-            border: 2px solid #ddd; 
-            border-radius: 8px; 
-            text-align: center;
-            background: white;
-            transition: all 0.2s;
-        }
-        .mini-input:focus { border-color: var(--bv-blue); outline: none; background: #fff; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-
-        .control-bar { margin-bottom: 20px; }
-        #datePicker { font-size: 1rem; padding: 5px 15px; border-radius: 20px; border: 2px solid var(--bv-blue); height: 40px; }
-        #passInput { border-radius: 20px; height: 40px; font-size: 0.9rem; }
-        .btn-success { border-radius: 20px; padding: 8px 25px; font-weight: bold; }
-
-        .footer-date { margin-top: 40px; text-align: right; font-style: italic; font-size: 1.2rem; }
-        #totalValue { font-weight: bold; color: #d63031; font-size: 1.7rem; }
+        .input-number { width: 100%; border: none; text-align: right; font-weight: bold; background: #fdfdfd; font-size: 1.4rem; padding: 5px 10px; border-radius: 6px; color: #333; }
+        .has-data { color: var(--bv-blue) !important; }
+        
+        .input-number:focus { outline: 2px solid var(--bv-blue); background: #fffde7; }
+        #specialInputArea { background: rgba(0, 82, 155, 0.05); padding: 20px; border-radius: 10px; margin-bottom: 25px; border: 2px solid var(--bv-blue); }
+        .mini-input-group { display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; }
+        .mini-input { width: 100% !important; height: 55px !important; font-size: 1.6rem !important; font-weight: bold; border: 2px solid #ddd; border-radius: 8px; text-align: center; background: white; }
+        
+        .footer-date { text-align: right; margin-top: 30px; font-style: italic; font-size: 1.2rem; }
 
         @media print { .no-print { display: none !important; } .report-card { box-shadow: none; border: none; width: 100%; padding: 0; } }
     </style>
@@ -86,24 +46,27 @@
 
     <h3 class="report-title">BẢNG BÁO CÁO HIỆU SUẤT XÉT NGHIỆM</h3>
 
-    <div class="control-bar no-print d-flex justify-content-between align-items-center">
-        <input type="date" id="datePicker" onchange="loadData()" class="form-control w-auto">
-        <div id="authArea"><input type="password" id="passInput" placeholder="Mật khẩu" class="form-control" style="width:130px;"></div>
+    <div class="control-bar no-print d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+        <div class="d-flex align-items-center gap-2">
+            <input type="date" id="datePicker" onchange="loadData()" class="form-control w-auto" style="border-radius:20px; border:2px solid var(--bv-blue)">
+        </div>
+        <div id="authArea"><input type="password" id="passInput" placeholder="Mật khẩu" class="form-control" style="width:130px; border-radius:20px;"></div>
         <div id="editArea" style="display: none;">
-            <button onclick="saveData()" class="btn btn-success shadow-sm">LƯU BÁO CÁO</button>
-            <button onclick="lock()" class="btn btn-outline-secondary ms-2">Đóng</button>
+            <button onclick="saveData()" class="btn btn-success fw-bold rounded-pill shadow-sm px-4">LƯU BÁO CÁO</button>
+            <button onclick="lock()" class="btn btn-outline-secondary ms-2 rounded-pill">Đóng</button>
         </div>
     </div>
 
     <div id="specialInputArea" class="no-print" style="display: none;">
+        <label class="fw-bold mb-2 text-primary small"><i class="fa-solid fa-keyboard"></i> NHẬP NHANH (Enter để nhảy ô - Click để ghi đè):</label>
         <div class="mini-input-group">
-            <input type="number" class="mini-input" id="mini-1" onkeyup="jumpAndSelect('mini-', 1, 7)" oninput="sumSpecial()" onfocus="forceSelect(this)" placeholder="1">
-            <input type="number" class="mini-input" id="mini-2" onkeyup="jumpAndSelect('mini-', 2, 7)" oninput="sumSpecial()" onfocus="forceSelect(this)" placeholder="2">
-            <input type="number" class="mini-input" id="mini-3" onkeyup="jumpAndSelect('mini-', 3, 7)" oninput="sumSpecial()" onfocus="forceSelect(this)" placeholder="3">
-            <input type="number" class="mini-input" id="mini-4" onkeyup="jumpAndSelect('mini-', 4, 7)" oninput="sumSpecial()" onfocus="forceSelect(this)" placeholder="4">
-            <input type="number" class="mini-input" id="mini-5" onkeyup="jumpAndSelect('mini-', 5, 7)" oninput="sumSpecial()" onfocus="forceSelect(this)" placeholder="5">
-            <input type="number" class="mini-input" id="mini-6" onkeyup="jumpAndSelect('mini-', 6, 7)" oninput="sumSpecial()" onfocus="forceSelect(this)" placeholder="6">
-            <input type="number" class="mini-input" id="mini-7" onkeyup="jumpAndSelect('mini-', 7, 7)" oninput="sumSpecial()" onfocus="forceSelect(this)" placeholder="7">
+            <input type="number" class="mini-input" id="mini-1" onkeydown="smartJump(event, 'mini-', 1, 7)" oninput="sumSpecial()" onfocus="handleFocus(this)" value="0">
+            <input type="number" class="mini-input" id="mini-2" onkeydown="smartJump(event, 'mini-', 2, 7)" oninput="sumSpecial()" onfocus="handleFocus(this)" value="0">
+            <input type="number" class="mini-input" id="mini-3" onkeydown="smartJump(event, 'mini-', 3, 7)" oninput="sumSpecial()" onfocus="handleFocus(this)" value="0">
+            <input type="number" class="mini-input" id="mini-4" onkeydown="smartJump(event, 'mini-', 4, 7)" oninput="sumSpecial()" onfocus="handleFocus(this)" value="0">
+            <input type="number" class="mini-input" id="mini-5" onkeydown="smartJump(event, 'mini-', 5, 7)" oninput="sumSpecial()" onfocus="handleFocus(this)" value="0">
+            <input type="number" class="mini-input" id="mini-6" onkeydown="smartJump(event, 'mini-', 6, 7)" oninput="sumSpecial()" onfocus="handleFocus(this)" value="0">
+            <input type="number" class="mini-input" id="mini-7" onkeydown="smartJump(event, 'mini-', 7, 7)" oninput="sumSpecial()" onfocus="handleFocus(this)" value="0">
         </div>
     </div>
 
@@ -121,7 +84,7 @@
         <tfoot>
             <tr style="background: #f8f9fa;">
                 <td colspan="4" class="text-end px-4 fw-bold">TỔNG CỘNG</td>
-                <td id="totalValue" class="text-end px-3">0</td>
+                <td id="totalValue" class="text-end px-3 fw-bold fs-4 text-danger">0</td>
             </tr>
         </tfoot>
     </table>
@@ -135,8 +98,6 @@
     const database = firebase.database();
 
     let isEditing = false;
-    let jumpTimer = null;
-
     const machines = [
         { id: "PT100674", ten: "Hệ thống xét nghiệm sinh hóa - miễn dịch tự động và thiết bị hỗ trợ", model: "24d" },
         { id: "PT100673", ten: "Máy đếm tế bào dòng chảy (flow cytometry)", model: "NAVIOS (8 COLOR/2LASER)" },
@@ -144,34 +105,33 @@
         { id: "PT100663", ten: "Máy phân tích miễn dịch tự động ≥ 150 test/giờ", model: "DxI 800" }
     ];
 
-    function forceSelect(el) {
-        el.type = 'text';
+    // CẢI TIẾN QUAN TRỌNG: Xử lý khi focus
+    function handleFocus(el) {
+        // 1. Nếu là 0 thì xóa trắng ngay để nhập mới không bị dính số 0
+        if (el.value === "0") {
+            el.value = "";
+        }
+        // 2. Dùng setTimeout để đảm bảo lệnh select() chạy sau khi trình duyệt hoàn tất focus
         setTimeout(() => {
-            el.select();
-            el.setSelectionRange(0, 9999);
-            setTimeout(() => { el.type = 'number'; }, 10);
+            el.select(); // Bôi đen toàn bộ văn bản đang có
         }, 10);
     }
 
-    function jumpAndSelect(prefix, currentIdx, maxIdx) {
-        if (jumpTimer) clearTimeout(jumpTimer);
-        const currentEl = document.getElementById(prefix + currentIdx);
-        if (currentEl && currentEl.value !== "") {
-            jumpTimer = setTimeout(() => {
-                if (currentIdx < maxIdx && document.activeElement === currentEl) {
-                    const nextEl = document.getElementById(prefix + (currentIdx + 1));
-                    if (nextEl) {
-                        nextEl.focus();
-                        forceSelect(nextEl);
-                    }
+    function smartJump(e, prefix, currentIdx, maxIdx) {
+        if (e.key === "Enter" || e.key === "ArrowRight") {
+            e.preventDefault();
+            if (currentIdx < maxIdx) {
+                const nextEl = document.getElementById(prefix + (currentIdx + 1));
+                if (nextEl) {
+                    nextEl.focus();
                 }
-            }, 300); // Giữ tốc độ siêu tốc 0.3s
+            }
+        } else if (e.key === "ArrowLeft" && currentIdx > 1) {
+            const prevEl = document.getElementById(prefix + (currentIdx - 1));
+            if (prevEl) {
+                prevEl.focus();
+            }
         }
-    }
-
-    function setToday() {
-        const today = new Date();
-        document.getElementById('datePicker').value = today.toISOString().split('T')[0];
     }
 
     function sumSpecial() {
@@ -182,6 +142,7 @@
         const mainInput = document.getElementById('row-input-1');
         if(mainInput) {
             mainInput.value = total;
+            mainInput.classList.add('has-data');
             calculateTotal();
         }
     }
@@ -194,29 +155,35 @@
         document.getElementById('dMonth').innerText = m;
         document.getElementById('dYear').innerText = y;
 
-        database.ref('reports/' + date).once('value', (snapshot) => {
-            const data = snapshot.val() || {};
-            const body = document.getElementById('tableBody');
-            body.innerHTML = "";
-            machines.forEach((mach, i) => {
-                const idx = i + 1;
-                let val = data[mach.id] || "0";
-                body.innerHTML += `<tr>
-                    <td class="text-center">${idx}</td>
-                    <td class="text-center text-muted"><small>${mach.id}</small></td>
-                    <td class="px-3 fw-bold">${mach.ten}</td>
-                    <td class="text-center fw-bold text-secondary">${mach.model}</td>
-                    <td>
-                        <input type="number" id="row-input-${idx}" class="input-number" value="${val}"
-                               ${!isEditing ? 'readonly' : ''} 
-                               onfocus="forceSelect(this)"
-                               oninput="calculateTotal()" 
-                               onkeyup="jumpAndSelect('row-input-', ${idx}, ${machines.length})">
-                    </td>
-                </tr>`;
-            });
-            calculateTotal();
+        database.ref('reports').once('value', (snapshot) => {
+            const displayData = (snapshot.val() || {})[date];
+            renderTable(displayData || {}, !!displayData);
         });
+    }
+
+    function renderTable(data, hasContent) {
+        const body = document.getElementById('tableBody');
+        body.innerHTML = "";
+        machines.forEach((mach, i) => {
+            const idx = i + 1;
+            let val = data[mach.id] || "0";
+            body.innerHTML += `<tr>
+                <td class="text-center">${idx}</td>
+                <td class="text-center text-muted"><small>${mach.id}</small></td>
+                <td class="px-3 fw-bold">${mach.ten}</td>
+                <td class="text-center fw-bold text-secondary">${mach.model}</td>
+                <td>
+                    <input type="number" id="row-input-${idx}" 
+                           class="input-number ${hasContent ? 'has-data' : ''}" 
+                           value="${val}"
+                           ${!isEditing ? 'readonly' : ''} 
+                           onfocus="handleFocus(this)"
+                           oninput="this.classList.add('has-data'); calculateTotal()" 
+                           onkeydown="smartJump(event, 'row-input-', ${idx}, ${machines.length})">
+                </td>
+            </tr>`;
+        });
+        calculateTotal();
     }
 
     function calculateTotal() {
@@ -234,10 +201,7 @@
         machines.forEach((m, i) => {
             updateData[m.id] = document.getElementById('row-input-' + (i+1)).value || "0";
         });
-        database.ref('reports/' + date).set(updateData).then(() => { 
-            alert("Đã lưu thành công!"); 
-            lock(); 
-        });
+        database.ref('reports/' + date).set(updateData).then(() => { alert("Đã lưu!"); lock(); });
     }
 
     function unlock() {
@@ -261,7 +225,8 @@
         if (e.code === "Space" && document.activeElement.id === "passInput") { e.preventDefault(); unlock(); }
     });
 
-    setToday();
+    const today = new Date();
+    document.getElementById('datePicker').value = today.toISOString().split('T')[0];
     loadData();
 </script>
 </body>
