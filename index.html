@@ -13,69 +13,59 @@
 
     <style>
         :root { --bv-blue: #00529b; --bv-green: #2ecc71; }
-        body { background-color: #f0f4f8; font-family: "Times New Roman", Times, serif; padding: 20px; color: #333; }
         
+        body { background-color: #eef2f7; font-family: "Times New Roman", Times, serif; padding: 30px; color: #333; }
+        
+        /* Phóng to toàn bộ khung báo cáo */
         .report-card { 
-            max-width: 1050px; margin: auto; background: white; border-radius: 4px; 
-            box-shadow: 0 5px 25px rgba(0,0,0,0.1); padding: 50px; border-top: 10px solid var(--bv-blue);
-        }
-        
-        .hospital-brand { border-bottom: 2px solid var(--bv-green); margin-bottom: 20px; padding-bottom: 10px; }
-        .hospital-name { color: var(--bv-blue); font-weight: bold; font-size: 1.4rem; margin: 0; text-transform: uppercase; }
-        
-        .report-title { text-align: center; font-weight: bold; margin: 30px 0; font-size: 1.8rem; text-transform: uppercase; color: #000; }
-        
-        .table { border: 1.5px solid #000; }
-        .table thead th { background-color: #f8f9fa; color: #000; text-align: center; border: 1px solid #000; font-weight: bold; padding: 12px; }
-        .table td { border: 1px solid #000; vertical-align: middle; padding: 10px; }
-        
-        .input-number { width: 100%; border: none; text-align: right; font-weight: bold; background: transparent; font-size: 1.2rem; color: var(--bv-blue); }
-        .input-number:focus { outline: none; background: #fff9c4; }
-
-        .control-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        
-        /* Khu vực 7 ô nhập liệu to hơn */
-        #specialInputArea {
-            background: #e8f4fd;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            border: 2px dashed var(--bv-blue);
-        }
-        .special-title {
-            font-weight: bold;
-            color: var(--bv-blue);
-            margin-bottom: 15px;
-            display: block;
-        }
-        .mini-input-group {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 10px;
-        }
-        .mini-input-box {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .mini-input-box label { font-size: 0.8rem; margin-bottom: 5px; font-weight: bold; }
-        .mini-input {
-            width: 100%;
-            padding: 10px;
-            text-align: center;
-            border: 1px solid var(--bv-blue);
-            border-radius: 5px;
-            font-size: 1.1rem;
-            font-weight: bold;
+            max-width: 1200px; margin: auto; background: white; 
+            border-radius: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.1); 
+            padding: 60px; border-top: 15px solid var(--bv-blue); 
         }
 
-        .footer-date { margin-top: 40px; text-align: right; font-style: italic; font-size: 1.2rem; padding-right: 30px; }
+        .hospital-name { color: var(--bv-blue); font-weight: 800; font-size: 1.8rem; margin: 0; text-transform: uppercase; }
+        .dept-name { color: var(--bv-green); font-weight: bold; font-size: 1.4rem; margin-top: 5px; }
 
-        @media print { 
-            .no-print { display: none !important; } 
-            .report-card { box-shadow: none; border: none; width: 100%; padding: 0; }
-            body { background: white; }
+        /* Tiêu đề cực lớn */
+        .report-title { 
+            text-align: center; font-weight: 900; margin: 50px 0; 
+            font-size: 2.5rem; text-transform: uppercase; color: #000;
         }
+
+        /* Bảng to và rõ nét */
+        .table { border: 2.5px solid #000; font-size: 1.4rem; } /* Tăng font chữ bảng */
+        .table thead th { background-color: #f1f4f9; color: #000; border: 2px solid #000; padding: 20px; font-size: 1.5rem; }
+        .table td { border: 2px solid #000; vertical-align: middle; padding: 15px; height: 80px; }
+        
+        /* Ô nhập liệu khổng lồ */
+        .input-number { 
+            width: 100%; border: none; text-align: right; 
+            font-weight: 900; background: #f9f9f9; font-size: 2.2rem; /* Chữ số cực to */
+            color: var(--bv-blue); padding: 5px 15px; border-radius: 10px;
+        }
+        .input-number:focus { outline: none; background: #fffde7; }
+
+        /* Vùng 7 ô mini to hơn */
+        #specialInputArea { 
+            background: rgba(0, 82, 155, 0.08); padding: 35px; 
+            border-radius: 15px; margin-bottom: 40px; border: 3px solid var(--bv-blue);
+        }
+        .mini-input-group { gap: 20px; }
+        .mini-input { 
+            height: 90px; font-size: 2.2rem; font-weight: 900; /* Phóng to ô mini */
+            border: 3px solid #ccc; border-radius: 12px; text-align: center;
+        }
+        .mini-input:focus { border-color: var(--bv-blue); background: #fff; transform: scale(1.05); }
+
+        .control-bar { padding: 20px; margin-bottom: 30px; font-size: 1.2rem; }
+        #datePicker { font-size: 1.5rem; padding: 10px 20px; height: 60px; }
+        #passInput { height: 60px; font-size: 1.3rem; }
+        .btn-success { font-size: 1.5rem; padding: 12px 40px; }
+
+        .footer-date { margin-top: 60px; text-align: right; font-style: italic; font-size: 1.6rem; font-weight: bold; }
+        #totalValue { font-weight: 900; color: #e74c3c; font-size: 2.5rem; }
+
+        @media print { .no-print { display: none !important; } .report-card { box-shadow: none; border: none; width: 100%; padding: 0; } }
     </style>
 </head>
 <body>
@@ -84,63 +74,52 @@
     <div class="hospital-brand">
         <p class="hospital-name">SỞ Y TẾ TP. HỒ CHÍ MINH</p>
         <p class="hospital-name">BỆNH VIỆN UNG BƯỚU - CS2</p>
-        <p class="mb-0 fw-bold" style="color: var(--bv-green)">KHOA XÉT NGHIỆM</p>
+        <p class="dept-name">KHOA XÉT NGHIỆM</p>
     </div>
 
-    <h3 class="report-title">BẢNG BÁO CÁO HIỆU SUẤT XÉT NGHIỆM HẰNG NGÀY</h3>
+    <h3 class="report-title">BẢNG BÁO CÁO HIỆU SUẤT XÉT NGHIỆM</h3>
 
-    <div class="control-bar no-print">
-        <div class="custom-date-box">
-            <input type="date" id="datePicker" onchange="loadData()" style="border:2px solid var(--bv-blue); border-radius:20px; padding:5px 15px;">
-        </div>
-
-        <div id="authArea">
-            <input type="password" id="passInput" placeholder="Mật khẩu" class="form-control form-control-sm d-inline-block" style="width: 120px; border-radius: 20px;">
-        </div>
-
+    <div class="control-bar no-print d-flex justify-content-between align-items-center">
+        <input type="date" id="datePicker" onchange="loadData()" class="form-control w-auto fw-bold">
+        <div id="authArea"><input type="password" id="passInput" placeholder="Mật khẩu" class="form-control" style="width:200px; border-radius:30px;"></div>
         <div id="editArea" style="display: none;">
-            <button onclick="saveData()" class="btn btn-success btn-sm fw-bold px-4 shadow-sm" style="border-radius: 20px;">
-                <i class="fa-solid fa-cloud-arrow-up me-1"></i> LƯU (Ctrl+S)
-            </button>
-            <button onclick="lock()" class="btn btn-outline-secondary btn-sm ms-2" style="border-radius: 20px;">Đóng</button>
+            <button onclick="saveData()" class="btn btn-success fw-bold rounded-pill shadow">LƯU BÁO CÁO</button>
+            <button onclick="lock()" class="btn btn-outline-secondary ms-3 rounded-pill" style="font-size: 1.2rem;">Đóng</button>
         </div>
     </div>
 
     <div id="specialInputArea" class="no-print" style="display: none;">
-        <span class="special-title"><i class="fa-solid fa-calculator me-2"></i>NHẬP DỮ LIỆU CHI TIẾT CHO DÒNG 1 (PT100674)</span>
-        <div class="mini-input-group">
-            <div class="mini-input-box"><label>Ô 1</label><input type="number" class="mini-input" id="mini-1" oninput="sumSpecial()"></div>
-            <div class="mini-input-box"><label>Ô 2</label><input type="number" class="mini-input" id="mini-2" oninput="sumSpecial()"></div>
-            <div class="mini-input-box"><label>Ô 3</label><input type="number" class="mini-input" id="mini-3" oninput="sumSpecial()"></div>
-            <div class="mini-input-box"><label>Ô 4</label><input type="number" class="mini-input" id="mini-4" oninput="sumSpecial()"></div>
-            <div class="mini-input-box"><label>Ô 5</label><input type="number" class="mini-input" id="mini-5" oninput="sumSpecial()"></div>
-            <div class="mini-input-box"><label>Ô 6</label><input type="number" class="mini-input" id="mini-6" oninput="sumSpecial()"></div>
-            <div class="mini-input-box"><label>Ô 7</label><input type="number" class="mini-input" id="mini-7" oninput="sumSpecial()"></div>
+        <div class="mini-input-group d-flex justify-content-center">
+            <input type="number" class="mini-input form-control" id="mini-1" onkeyup="jumpAndSelect('mini-', 1, 7)" oninput="sumSpecial()" onfocus="forceSelect(this)" placeholder="1">
+            <input type="number" class="mini-input form-control" id="mini-2" onkeyup="jumpAndSelect('mini-', 2, 7)" oninput="sumSpecial()" onfocus="forceSelect(this)" placeholder="2">
+            <input type="number" class="mini-input form-control" id="mini-3" onkeyup="jumpAndSelect('mini-', 3, 7)" oninput="sumSpecial()" onfocus="forceSelect(this)" placeholder="3">
+            <input type="number" class="mini-input form-control" id="mini-4" onkeyup="jumpAndSelect('mini-', 4, 7)" oninput="sumSpecial()" onfocus="forceSelect(this)" placeholder="4">
+            <input type="number" class="mini-input form-control" id="mini-5" onkeyup="jumpAndSelect('mini-', 5, 7)" oninput="sumSpecial()" onfocus="forceSelect(this)" placeholder="5">
+            <input type="number" class="mini-input form-control" id="mini-6" onkeyup="jumpAndSelect('mini-', 6, 7)" oninput="sumSpecial()" onfocus="forceSelect(this)" placeholder="6">
+            <input type="number" class="mini-input form-control" id="mini-7" onkeyup="jumpAndSelect('mini-', 7, 7)" oninput="sumSpecial()" onfocus="forceSelect(this)" placeholder="7">
         </div>
     </div>
 
     <table class="table">
         <thead>
             <tr>
-                <th width="5%">STT</th>
-                <th width="12%">MÃ MÁY</th>
-                <th width="43%">TÊN HỆ THỐNG / THIẾT BỊ XÉT NGHIỆM</th>
-                <th width="25%">MODEL</th>
+                <th width="8%">STT</th>
+                <th width="15%">MÃ MÁY</th>
+                <th width="42%">TÊN HỆ THỐNG / THIẾT BỊ</th>
+                <th width="20%">MODEL</th>
                 <th width="15%">SỐ LƯỢNG</th>
             </tr>
         </thead>
         <tbody id="tableBody"></tbody>
         <tfoot>
-            <tr style="background: #f8f9fa; font-weight: bold;">
-                <td colspan="4" class="text-end px-4">TỔNG CỘNG</td>
-                <td id="totalValue" class="text-end text-danger fs-5 px-3">0</td>
+            <tr style="background: #f8f9fa;">
+                <td colspan="4" class="text-end px-4 fw-bold" style="font-size: 1.8rem;">TỔNG CỘNG</td>
+                <td id="totalValue" class="text-end px-3">0</td>
             </tr>
         </tfoot>
     </table>
 
-    <div class="footer-date">
-        Ngày <span id="dDay">...</span> tháng <span id="dMonth">...</span> năm <span id="dYear">20...</span>
-    </div>
+    <div class="footer-date">Ngày <span id="dDay">..</span> tháng <span id="dMonth">..</span> năm <span id="dYear">20..</span></div>
 </div>
 
 <script>
@@ -149,33 +128,116 @@
     const database = firebase.database();
 
     let isEditing = false;
+    let jumpTimer = null;
 
     const machines = [
         { id: "PT100674", ten: "Hệ thống xét nghiệm sinh hóa - miễn dịch tự động và thiết bị hỗ trợ", model: "24d" },
-        { id: "PT100673", ten: "Máy đếm tế bào dòng chảy (flow cytometry) (máy phân tích tế bào dòng chảy)", model: "NAVIOS (8 COLOR/2LASER)" },
-        { id: "PT100661", ten: "Máy phân tích huyết học tự động ≥ 50 thông số (máy phân tích huyết học)", model: "DxH 800" },
-        { id: "PT100663", ten: "Máy phân tích miễn dịch tự động ≥ 150 test/giờ (máy phân tích miễn dịch)", model: "DxI 800" }
+        { id: "PT100673", ten: "Máy đếm tế bào dòng chảy (flow cytometry)", model: "NAVIOS (8 COLOR/2LASER)" },
+        { id: "PT100661", ten: "Máy phân tích huyết học tự động ≥ 50 thông số", model: "DxH 800" },
+        { id: "PT100663", ten: "Máy phân tích miễn dịch tự động ≥ 150 test/giờ", model: "DxI 800" }
     ];
 
-    document.addEventListener('keydown', function(e) {
-        if (e.code === "Space" && document.activeElement.id === "passInput") {
-            e.preventDefault();
-            unlock();
-        }
-        if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-            e.preventDefault(); 
-            if (isEditing) saveData();
-            else alert("Vui lòng mở khóa trước!");
-        }
-    });
+    function forceSelect(el) {
+        el.type = 'text';
+        setTimeout(() => {
+            el.select();
+            el.setSelectionRange(0, 9999);
+            setTimeout(() => { el.type = 'number'; }, 10);
+        }, 10);
+    }
 
-    document.getElementById('datePicker').valueAsDate = new Date();
+    function jumpAndSelect(prefix, currentIdx, maxIdx) {
+        if (jumpTimer) clearTimeout(jumpTimer);
+        const currentEl = document.getElementById(prefix + currentIdx);
+        if (currentEl && currentEl.value !== "") {
+            jumpTimer = setTimeout(() => {
+                if (currentIdx < maxIdx && document.activeElement === currentEl) {
+                    const nextEl = document.getElementById(prefix + (currentIdx + 1));
+                    if (nextEl) {
+                        nextEl.focus();
+                        forceSelect(nextEl);
+                    }
+                }
+            }, 300); // 0.3s
+        }
+    }
+
+    function setToday() {
+        const today = new Date();
+        document.getElementById('datePicker').value = today.toISOString().split('T')[0];
+    }
+
+    function sumSpecial() {
+        let total = 0;
+        for(let i=1; i<=7; i++) {
+            total += (parseInt(document.getElementById('mini-'+i).value) || 0);
+        }
+        const mainInput = document.getElementById('row-input-1');
+        if(mainInput) {
+            mainInput.value = total;
+            calculateTotal();
+        }
+    }
+
+    function loadData() {
+        const date = document.getElementById('datePicker').value;
+        if (!date) return;
+        const [y, m, d] = date.split('-');
+        document.getElementById('dDay').innerText = d;
+        document.getElementById('dMonth').innerText = m;
+        document.getElementById('dYear').innerText = y;
+
+        database.ref('reports/' + date).once('value', (snapshot) => {
+            const data = snapshot.val() || {};
+            const body = document.getElementById('tableBody');
+            body.innerHTML = "";
+            machines.forEach((mach, i) => {
+                const idx = i + 1;
+                let val = data[mach.id] || "0";
+                body.innerHTML += `<tr>
+                    <td class="text-center fw-bold">${idx}</td>
+                    <td class="text-center text-muted"><small>${mach.id}</small></td>
+                    <td class="px-3 fw-bold">${mach.ten}</td>
+                    <td class="text-center fw-bold text-secondary">${mach.model}</td>
+                    <td>
+                        <input type="number" id="row-input-${idx}" class="input-number" value="${val}"
+                               ${!isEditing ? 'readonly' : ''} 
+                               onfocus="forceSelect(this)"
+                               oninput="calculateTotal()" 
+                               onkeyup="jumpAndSelect('row-input-', ${idx}, ${machines.length})">
+                    </td>
+                </tr>`;
+            });
+            calculateTotal();
+        });
+    }
+
+    function calculateTotal() {
+        let total = 0;
+        for(let i=1; i<=machines.length; i++) {
+            const input = document.getElementById('row-input-' + i);
+            if (input) total += (parseInt(input.value) || 0);
+        }
+        document.getElementById('totalValue').innerText = total.toLocaleString('vi-VN');
+    }
+
+    function saveData() {
+        const date = document.getElementById('datePicker').value;
+        const updateData = {};
+        machines.forEach((m, i) => {
+            updateData[m.id] = document.getElementById('row-input-' + (i+1)).value || "0";
+        });
+        database.ref('reports/' + date).set(updateData).then(() => { 
+            alert("Đã lưu thành công!"); 
+            lock(); 
+        });
+    }
 
     function unlock() {
         isEditing = true;
         document.getElementById('authArea').style.display = "none";
         document.getElementById('editArea').style.display = "block";
-        document.getElementById('specialInputArea').style.display = "block"; // Hiện 7 ô nhập
+        document.getElementById('specialInputArea').style.display = "block";
         loadData();
     }
 
@@ -183,100 +245,16 @@
         isEditing = false;
         document.getElementById('authArea').style.display = "block";
         document.getElementById('editArea').style.display = "none";
-        document.getElementById('specialInputArea').style.display = "none"; // Ẩn 7 ô nhập
+        document.getElementById('specialInputArea').style.display = "none";
         document.getElementById('passInput').value = "";
-        // Xóa sạch giá trị trong 7 ô mini
-        for(let i=1; i<=7; i++) document.getElementById('mini-'+i).value = "";
         loadData();
     }
 
-    function clearIfZero(input) {
-        if (input.value === "0") input.value = "";
-    }
+    document.addEventListener('keydown', (e) => {
+        if (e.code === "Space" && document.activeElement.id === "passInput") { e.preventDefault(); unlock(); }
+    });
 
-    function restoreIfEmpty(input) {
-        if (input.value === "") input.value = "0";
-        calculateTotal();
-    }
-
-    function sumSpecial() {
-        let total = 0;
-        for(let i=1; i<=7; i++) {
-            let val = document.getElementById('mini-' + i).value;
-            total += (parseInt(val) || 0);
-        }
-        // Điền tổng vào ô Số lượng của dòng 1
-        const mainInput = document.getElementById('input-PT100674');
-        if(mainInput) mainInput.value = total;
-        calculateTotal();
-    }
-
-    function loadData() {
-        const date = document.getElementById('datePicker').value;
-        if (!date) return;
-        const d = new Date(date);
-        document.getElementById('dDay').innerText = d.getDate().toString().padStart(2, '0');
-        document.getElementById('dMonth').innerText = (d.getMonth() + 1).toString().padStart(2, '0');
-        document.getElementById('dYear').innerText = d.getFullYear();
-
-        database.ref('reports/' + date).once('value', (snapshot) => {
-            const data = snapshot.val() || {};
-            const body = document.getElementById('tableBody');
-            body.innerHTML = "";
-            let total = 0;
-
-            machines.forEach((m, i) => {
-                let val = data[m.id];
-                if (val === undefined || val === "") val = "0";
-                total += parseInt(val);
-
-                body.innerHTML += `<tr>
-                    <td class="text-center">${i+1}</td>
-                    <td class="text-center"><small>${m.id}</small></td>
-                    <td class="px-3">${m.ten}</td>
-                    <td class="text-center fw-bold">${m.model}</td>
-                    <td>
-                        <input type="number" ${!isEditing ? 'readonly' : ''} 
-                               onfocus="clearIfZero(this)" 
-                               onblur="restoreIfEmpty(this)"
-                               oninput="calculateTotal()" 
-                               id="input-${m.id}" 
-                               class="input-number" value="${val}">
-                    </td>
-                </tr>`;
-            });
-            document.getElementById('totalValue').innerText = total.toLocaleString('vi-VN');
-        });
-    }
-
-    function calculateTotal() {
-        let total = 0;
-        machines.forEach(m => {
-            const input = document.getElementById(`input-${m.id}`);
-            if (input) {
-                let val = input.value;
-                total += (parseInt(val) || 0);
-            }
-        });
-        document.getElementById('totalValue').innerText = total.toLocaleString('vi-VN');
-    }
-
-    function saveData() {
-        const date = document.getElementById('datePicker').value;
-        const updateData = {};
-        machines.forEach(m => {
-            let val = document.getElementById(`input-${m.id}`).value;
-            updateData[m.id] = (val === "" || val === null) ? "0" : val;
-        });
-
-        database.ref('reports/' + date).set(updateData)
-            .then(() => { 
-                alert("Đã lưu dữ liệu thành công!"); 
-                lock(); 
-            })
-            .catch((e) => alert("Lỗi: " + e.message));
-    }
-
+    setToday();
     loadData();
 </script>
 </body>
