@@ -2,90 +2,163 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Báo Cáo Hiệu Suất - Xuân Bính Ngọ 2026</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Báo Cáo Hiệu Suất Thiết Bị - BV Ung Bướu CS2</title>
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
 
     <style>
-        :root { --red: #b30000; --gold: #ffd700; }
-        body { 
-            background: #7a0000; font-family: "Times New Roman", Times, serif;
-            padding: 40px 20px; background-image: url('https://www.transparenttextures.com/patterns/natural-paper.png');
+        :root { 
+            --primary-gradient: linear-gradient(135deg, #004e92, #000428);
+            --accent-color: #00d2ff;
+            --border-color: #333;
         }
-        .ong-do-container {
-            max-width: 850px; margin: auto; background: #fff; padding: 40px;
-            border: 10px solid var(--gold); border-image: linear-gradient(to bottom right, #ffd700, #ff8c00, #ffd700) 1;
-            box-shadow: 0 0 40px rgba(0,0,0,0.5);
-        }
-        .title { text-align: center; color: var(--red); font-weight: bold; font-size: 2.2rem; margin-bottom: 25px; text-shadow: 1px 1px var(--gold); }
-        .table { border: 2px solid var(--red); }
-        .table thead th { background: var(--red); color: #fff; text-align: center; border: 1px solid var(--gold); }
-        
-        /* Input cực nhẹ, không dùng transition để tránh lag */
-        .input-number { 
-            width: 100%; border: none; text-align: center; font-size: 1.8rem; 
-            font-weight: bold; color: var(--red); background: #fffcf0; outline: none;
-        }
-        .input-number:focus { background: #ffd70040; border-bottom: 2px solid var(--red); }
-        .input-number[readonly] { background: transparent; }
 
-        #passInput { width: 30px; border: none; background: transparent; color: transparent; outline: none; }
-        .no-print { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
-        #save-status { font-weight: bold; font-size: 0.9rem; margin-left: 10px; }
+        body { 
+            background: #eef2f3; 
+            font-family: "Times New Roman", Times, serif; 
+            padding: 30px 10px;
+        }
+
+        /* Khung bao ngoài rực rỡ */
+        .report-wrapper {
+            max-width: 1000px;
+            margin: auto;
+            background: #fff;
+            padding: 5px; /* Khoảng cách cho khung màu */
+            background: var(--primary-gradient);
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+        }
+
+        .report-content {
+            background: #fff;
+            padding: 40px;
+            border-radius: 10px;
+        }
+
+        /* Tiêu đề trang trí */
+        .header-box { border-bottom: 3px double var(--border-color); padding-bottom: 20px; margin-bottom: 30px; }
+        .hospital-name { font-size: 1.4rem; font-weight: bold; color: #004e92; text-transform: uppercase; }
+        .report-title { 
+            text-align: center; font-size: 2.2rem; font-weight: bold; color: #b30000;
+            margin: 30px 0; text-transform: uppercase; letter-spacing: 2px;
+        }
+
+        /* Bảng kẻ khung màu mè rõ nét */
+        .main-table { width: 100%; border-collapse: collapse; border: 2px solid var(--border-color); }
+        .main-table th { 
+            background: var(--primary-gradient); color: #fff; 
+            border: 1px solid #fff; padding: 15px; text-align: center;
+        }
+        .main-table td { border: 1px solid var(--border-color); padding: 10px; vertical-align: middle; }
+
+        /* Ô nhập liệu nổi bật */
+        .input-num {
+            width: 100%; border: 2px solid transparent; background: #f9f9f9;
+            text-align: center; font-size: 1.6rem; font-weight: bold;
+            font-family: "Times New Roman", serif; outline: none; border-radius: 5px;
+            transition: 0.3s;
+        }
+        .input-num:focus { border-color: var(--accent-color); background: #fff; box-shadow: 0 0 10px var(--accent-color); }
+        .input-num[readonly] { background: transparent; border: none; color: #000; }
+
+        /* Khu vực 7 ô tính dồn */
+        .calc-tool {
+            background: #f0faff; border: 2px dashed #004e92; padding: 15px;
+            margin-bottom: 20px; border-radius: 10px; display: none;
+        }
+        .mini-input {
+            width: 75px; border: 1px solid #004e92; text-align: center;
+            font-weight: bold; border-radius: 4px; padding: 5px; margin: 3px;
+        }
+
+        /* Mật khẩu & Điều khiển */
+        .control-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .pwd-input-group { 
+            background: #fff; border: 2px solid var(--border-color); 
+            border-radius: 20px; padding: 5px 15px;
+        }
+        #passInput { border: none; outline: none; width: 100px; font-style: italic; }
+
+        .total-row { background: #fffde7; font-weight: bold; font-size: 1.6rem; }
+        .total-text { color: #b30000; font-size: 2rem; }
     </style>
 </head>
 <body>
 
-<div class="ong-do-container">
-    <div class="header d-flex border-bottom border-danger pb-3 mb-3">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/0/03/Logo_BV_Ung_B%C6%B0%E1%BB%9Bu_TP.HCM.png" width="60" class="me-3">
-        <div>
-            <h5 class="m-0 text-danger fw-bold">BỆNH VIỆN UNG BƯỚU - CS2</h5>
-            <p class="m-0 text-secondary fw-bold small">🧧 KHOA XÉT NGHIỆM - 2026</p>
+<div class="report-wrapper">
+    <div class="report-content">
+        <div class="header-box d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/0/03/Logo_BV_Ung_B%C6%B0%E1%BB%9Bu_TP.HCM.png" width="80" class="me-3">
+                <div>
+                    <div class="hospital-name">Bệnh Viện Ung Bướu - CS2</div>
+                    <div class="fw-bold text-success">🧧 KHOA XÉT NGHIỆM</div>
+                </div>
+            </div>
+            <div class="text-end fw-bold text-primary">● Hệ thống trực tuyến</div>
         </div>
-    </div>
 
-    <h1 class="title">BÁO CÁO HIỆU SUẤT</h1>
+        <h1 class="report-title">Báo Cáo Hiệu Suất Thiết Bị</h1>
 
-    <div class="no-print">
-        <div class="d-flex align-items-center gap-2">
-            <b class="text-danger small">NGÀY:</b>
-            <input type="text" id="datePicker" class="form-control form-control-sm text-center fw-bold" style="width:130px;">
-        </div>
-        <div class="d-flex align-items-center">
-            <input type="password" id="passInput">
-            <div id="editArea" style="display:none">
-                <button onclick="saveData()" id="btnSave" class="btn btn-danger btn-sm fw-bold">LƯU BÁO CÁO</button>
-                <button onclick="lock()" class="btn btn-outline-secondary btn-sm ms-2">ĐÓNG</button>
-                <span id="save-status"></span>
+        <div class="control-row">
+            <div class="d-flex align-items-center gap-2">
+                <strong>Ngày:</strong>
+                <input type="text" id="datePicker" class="form-control text-center fw-bold" style="width:140px; border: 2px solid var(--border-color);">
+            </div>
+            <div>
+                <div class="pwd-input-group" id="authArea">
+                    <small>Mật khẩu:</small>
+                    <input type="password" id="passInput" placeholder="Nhập để sửa">
+                </div>
+                <div id="editArea" style="display:none">
+                    <button onclick="saveData()" id="btnSave" class="btn btn-danger fw-bold px-4 shadow">LƯU DỮ LIỆU</button>
+                    <button onclick="lock()" class="btn btn-outline-dark ms-2">ĐÓNG</button>
+                </div>
             </div>
         </div>
-    </div>
 
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th width="10%">STT</th>
-                <th>Tên Thiết Bị</th>
-                <th width="25%">Số Lượng</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr><td class="text-center">1</td><td>Sinh hóa - Miễn dịch (24d)</td><td><input type="number" id="val-PT100674" class="input-number" readonly oninput="updateTotalOnly()"></td></tr>
-            <tr><td class="text-center">2</td><td>Máy đếm dòng chảy (NAVIOS)</td><td><input type="number" id="val-PT100673" class="input-number" readonly oninput="updateTotalOnly()"></td></tr>
-            <tr><td class="text-center">3</td><td>Huyết học tự động (DxH 800)</td><td><input type="number" id="val-PT100661" class="input-number" readonly oninput="updateTotalOnly()"></td></tr>
-            <tr><td class="text-center">4</td><td>Miễn dịch tự động (DxI 800)</td><td><input type="number" id="val-PT100663" class="input-number" readonly oninput="updateTotalOnly()"></td></tr>
-        </tbody>
-        <tfoot>
-            <tr class="table-warning">
-                <td colspan="2" class="text-end fw-bold text-danger">TỔNG:</td>
-                <td id="totalValue" class="text-center fw-bold fs-3 text-danger">0</td>
-            </tr>
-        </tfoot>
-    </table>
-    <div class="text-end mt-2 fw-bold text-danger small">Ngày <span id="dDay">..</span>/<span id="dMonth">..</span>/2026</div>
+        <div id="calcTool" class="calc-tool">
+            <div class="fw-bold mb-2 text-primary">🧮 Bộ tính cộng dồn nhanh (Kết quả vào dòng 1):</div>
+            <div class="d-flex flex-wrap align-items-center">
+                <input type="number" class="mini-input" placeholder="Ô 1" oninput="doSum()">
+                <input type="number" class="mini-input" placeholder="Ô 2" oninput="doSum()">
+                <input type="number" class="mini-input" placeholder="Ô 3" oninput="doSum()">
+                <input type="number" class="mini-input" placeholder="Ô 4" oninput="doSum()">
+                <input type="number" class="mini-input" placeholder="Ô 5" oninput="doSum()">
+                <input type="number" class="mini-input" placeholder="Ô 6" oninput="doSum()">
+                <input type="number" class="mini-input" placeholder="Ô 7" oninput="doSum()">
+                <span class="ms-3 fw-bold fs-5 text-danger">= <span id="res7">0</span></span>
+            </div>
+        </div>
+
+        <table class="main-table">
+            <thead>
+                <tr>
+                    <th width="10%">STT</th>
+                    <th>Tên Hệ Thống / Thiết Bị</th>
+                    <th width="20%">Model</th>
+                    <th width="20%">Số Lượng</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                </tbody>
+            <tfoot>
+                <tr class="total-row">
+                    <td colspan="3" class="text-end">TỔNG CỘNG HÔM NAY:</td>
+                    <td id="totalValue" class="text-center total-text">0</td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <div class="mt-4 text-end italic" style="font-style: italic; font-weight: bold;">
+            Ngày <span id="dDay">...</span> tháng <span id="dMonth">...</span> năm 2026
+        </div>
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -94,96 +167,105 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    const machineIDs = ["PT100674", "PT100673", "PT100661", "PT100663"];
-    let lastDateKey = "";
+    const machines = [
+        { id: "PT100674", ten: "Hệ thống xét nghiệm sinh hóa - miễn dịch", model: "24d" },
+        { id: "PT100673", ten: "Máy đếm tế bào dòng chảy (Flow)", model: "NAVIOS" },
+        { id: "PT100661", ten: "Máy phân tích huyết học tự động", model: "DxH 800" },
+        { id: "PT100663", ten: "Máy phân tích miễn dịch tự động", model: "DxI 800" }
+    ];
 
-    // 1. KHỞI TẠO
+    let lastDateKey = "";
+    let isEditing = false;
+
     function init() {
         flatpickr("#datePicker", {
             defaultDate: "today", dateFormat: "d/m/Y",
             onChange: (dates) => {
                 lastDateKey = dates[0].toISOString().split('T')[0];
-                fetchDataOnce();
+                loadData();
             }
         });
         lastDateKey = new Date().toISOString().split('T')[0];
-        fetchDataOnce();
+        loadData();
     }
 
-    // 2. TẢI DỮ LIỆU (Chỉ gọi 1 lần khi đổi ngày)
-    function fetchDataOnce() {
+    function loadData() {
         const [y, m, d] = lastDateKey.split('-');
         document.getElementById('dDay').innerText = d;
         document.getElementById('dMonth').innerText = m;
 
-        // Dùng .once để lấy xong là thôi, không giữ kết nối đồng bộ
-        db.ref('reports/' + lastDateKey).once('value').then((s) => {
+        db.ref('reports/' + lastDateKey).once('value', (s) => {
             const data = s.val() || {};
-            machineIDs.forEach(id => {
-                const el = document.getElementById('val-' + id);
-                el.value = data[id] || 0;
+            const body = document.getElementById('tableBody');
+            body.innerHTML = "";
+            
+            machines.forEach((m, i) => {
+                body.innerHTML += `
+                    <tr>
+                        <td class="text-center fw-bold">${i+1}</td>
+                        <td class="fw-bold px-3">${m.ten}</td>
+                        <td class="text-center fw-bold text-primary">${m.model}</td>
+                        <td>
+                            <input type="number" id="val-${m.id}" class="input-num" 
+                            value="${data[m.id] || 0}" ${!isEditing ? 'readonly' : ''} 
+                            oninput="calculateTotal()" onfocus="this.select()">
+                        </td>
+                    </tr>`;
             });
-            updateTotalOnly();
+            calculateTotal();
         });
     }
 
-    // 3. TÍNH TỔNG (Chỉ chạy trên máy nội bộ, không đụng tới Firebase)
-    function updateTotalOnly() {
-        let total = 0;
-        machineIDs.forEach(id => {
-            total += parseInt(document.getElementById('val-' + id).value) || 0;
-        });
-        document.getElementById('totalValue').innerText = total.toLocaleString('vi-VN');
+    function doSum() {
+        let s = 0;
+        document.querySelectorAll('.mini-input').forEach(i => s += parseInt(i.value) || 0);
+        document.getElementById('res7').innerText = s;
+        const line1 = document.getElementById('val-PT100674');
+        if(line1) { line1.value = s; calculateTotal(); }
     }
 
-    // 4. MỞ KHÓA NHẬP LIỆU (Hoàn toàn Offline)
-    function unlock() {
-        document.getElementById('editArea').style.display = "block";
-        machineIDs.forEach(id => {
-            document.getElementById('val-' + id).removeAttribute('readonly');
+    function calculateTotal() {
+        let t = 0;
+        machines.forEach(m => {
+            const el = document.getElementById('val-' + m.id);
+            if(el) t += parseInt(el.value) || 0;
         });
-        document.getElementById('val-' + machineIDs[0]).focus();
+        document.getElementById('totalValue').innerText = t.toLocaleString('vi-VN');
     }
+
+    // Mật khẩu là 123
+    document.getElementById('passInput').addEventListener('input', function() {
+        if(this.value === "123") {
+            isEditing = true;
+            document.getElementById('authArea').style.display = "none";
+            document.getElementById('editArea').style.display = "block";
+            document.getElementById('calcTool').style.display = "block";
+            this.value = "";
+            loadData();
+        }
+    });
 
     function lock() {
+        isEditing = false;
+        document.getElementById('authArea').style.display = "flex";
         document.getElementById('editArea').style.display = "none";
-        machineIDs.forEach(id => {
-            document.getElementById('val-' + id).setAttribute('readonly', true);
-        });
+        document.getElementById('calcTool').style.display = "none";
+        loadData();
     }
 
-    // 5. LƯU DỮ LIỆU (Chỉ kết nối khi nhấn nút này)
     function saveData() {
         const btn = document.getElementById('btnSave');
-        const status = document.getElementById('save-status');
+        btn.disabled = true; btn.innerText = "ĐANG LƯU...";
         
-        btn.disabled = true;
-        status.innerText = "⌛ Đang lưu...";
-        status.style.color = "blue";
-
         const update = {};
-        machineIDs.forEach(id => {
-            update[id] = document.getElementById('val-' + id).value || 0;
+        machines.forEach(m => update[m.id] = document.getElementById('val-' + m.id).value || 0);
+
+        db.ref('reports/' + lastDateKey).set(update).then(() => {
+            alert("Đã lưu dữ liệu báo cáo!");
+            btn.disabled = false; btn.innerText = "LƯU DỮ LIỆU";
+            lock();
         });
-
-        // Gửi dữ liệu lên Firebase
-        db.ref('reports/' + lastDateKey).set(update)
-            .then(() => {
-                status.innerText = "✅ Đã lưu xong!";
-                status.style.color = "green";
-                setTimeout(() => { status.innerText = ""; btn.disabled = false; lock(); }, 1500);
-            })
-            .catch(e => {
-                alert("Lỗi mạng: " + e.message);
-                btn.disabled = false;
-                status.innerText = "❌ Lỗi!";
-            });
     }
-
-    // Phím tắt Space để nhập
-    document.getElementById('passInput').addEventListener('keydown', (e) => {
-        if (e.code === "Space") { e.preventDefault(); unlock(); }
-    });
 
     init();
 </script>
