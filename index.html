@@ -2,290 +2,196 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Báo Cáo Hiệu Suất - Xuân Bính Ngọ 2026</title>
-    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
 
     <style>
         :root { --red: #b30000; --gold: #ffd700; --dark-red: #7a0000; }
-        
         body { 
-            background: var(--dark-red); 
-            font-family: "Times New Roman", Times, serif;
-            padding: 80px 20px;
-            background-image: url('https://www.transparenttextures.com/patterns/natural-paper.png');
-            overflow-x: hidden;
+            background: var(--dark-red); font-family: "Times New Roman", Times, serif;
+            padding: 60px 20px; background-image: url('https://www.transparenttextures.com/patterns/natural-paper.png');
         }
-
-        #blossom-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; opacity: 0.7; }
-
-        /* --- KHUNG TRANG TRÍ --- */
         .ong-do-container {
-            position: relative; max-width: 1050px; margin: auto; background: #fff;
-            padding: 50px; border: 12px solid var(--gold);
+            position: relative; max-width: 900px; margin: auto; background: #fff;
+            padding: 40px; border: 10px solid var(--gold);
             border-image: linear-gradient(to bottom right, #ffd700, #ff8c00, #ffd700) 1;
-            box-shadow: 0 0 80px rgba(0,0,0,0.6);
-            border-radius: 4px;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
         }
-
-        /* Trạng thái kết nối */
-        #conn-status {
-            position: fixed; top: 15px; left: 15px; padding: 6px 15px;
-            border-radius: 20px; font-weight: bold; font-size: 0.85rem; z-index: 10000;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        }
-        .online { background: #28a745; color: white; border: 1px solid #fff; }
-        .offline { background: #dc3545; color: white; border: 1px solid #fff; animation: blink 1s infinite; }
-        @keyframes blink { 50% { opacity: 0.6; } }
-
-        /* Hình thoi 4 góc */
         .hinh-thoi {
-            position: absolute; width: 90px; height: 90px; background: var(--red);
-            border: 4px solid var(--gold); transform: rotate(45deg);
+            position: absolute; width: 70px; height: 70px; background: var(--red);
+            border: 3px solid var(--gold); transform: rotate(45deg);
             display: flex; align-items: center; justify-content: center; z-index: 100;
         }
-        .hinh-thoi span { transform: rotate(-45deg); color: var(--gold); font-weight: bold; font-size: 1.2rem; }
-        .top-l { top: -50px; left: -50px; } .top-r { top: -50px; right: -50px; }
-        .bot-l { bottom: -50px; left: -50px; } .bot-r { bottom: -50px; right: -50px; }
-
-        .header { border-bottom: 3px solid var(--red); padding-bottom: 20px; margin-bottom: 30px; }
-        .title { text-align: center; color: var(--red); font-weight: bold; font-size: 2.8rem; text-shadow: 2px 2px var(--gold); margin-bottom: 30px; }
-
-        /* --- BẢNG DỮ LIỆU --- */
-        .table { border: 2.5px solid var(--red); margin-bottom: 0; }
-        .table thead th { 
-            background: var(--red); color: #fff; text-align: center; 
-            padding: 15px; border: 1.5px solid var(--gold); text-transform: uppercase;
-        }
-        .table td { vertical-align: middle; border: 1px solid var(--red); font-weight: bold; font-size: 1.2rem; padding: 12px; }
+        .hinh-thoi span { transform: rotate(-45deg); color: var(--gold); font-weight: bold; font-size: 0.9rem; }
+        .top-l { top: -35px; left: -35px; } .top-r { top: -35px; right: -35px; }
         
-        /* Input Chống Lag */
+        .title { text-align: center; color: var(--red); font-weight: bold; font-size: 2.2rem; margin: 20px 0; text-shadow: 1px 1px var(--gold); }
+        .table { border: 2px solid var(--red); }
+        .table thead th { background: var(--red); color: #fff; text-align: center; border: 1px solid var(--gold); padding: 12px; }
+        
         .input-number { 
-            width: 100%; border: none; text-align: center; 
-            font-size: 1.8rem; font-weight: bold; background: #fffcf0; 
-            color: var(--red); border-radius: 5px; outline: none;
+            width: 100%; border: none; text-align: center; font-size: 1.6rem; 
+            font-weight: bold; color: var(--red); background: #fffcf0; outline: none;
+            transition: all 0.2s;
         }
-        .input-number:focus { background: #fff1c1; box-shadow: inset 0 0 5px rgba(0,0,0,0.2); }
+        .input-number:focus { background: #fff1c1; color: #000; }
         .input-number[readonly] { background: transparent; cursor: default; }
 
-        #passInput { width: 40px; border: none; background: transparent; color: transparent; cursor: default; }
-        .footer-date { color: var(--red); text-align: right; margin-top: 30px; font-size: 1.4rem; font-weight: bold; }
+        #passInput { width: 30px; border: none; background: transparent; color: transparent; outline: none; }
+        #status-light { position: fixed; top: 10px; right: 10px; padding: 5px 15px; border-radius: 20px; color: white; font-weight: bold; font-size: 12px; z-index: 1000; }
+        .no-print { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
     </style>
 </head>
 <body>
 
-<div id="conn-status" class="offline">Đang kết nối...</div>
-<canvas id="blossom-canvas"></canvas>
+<div id="status-light" style="background: gray;">Đang kết nối...</div>
 
 <div class="ong-do-container">
-    <div class="hinh-thoi top-l"><span>CHÚC</span></div>
-    <div class="hinh-thoi top-r"><span>MỪNG</span></div>
-    <div class="hinh-thoi bot-l"><span>NĂM</span></div>
-    <div class="hinh-thoi bot-r"><span>MỚI</span></div>
+    <div class="hinh-thoi top-l"><span>XUÂN</span></div>
+    <div class="hinh-thoi top-r"><span>2026</span></div>
 
-    <div class="header d-flex align-items-center">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/0/03/Logo_BV_Ung_B%C6%B0%E1%BB%9Bu_TP.HCM.png" width="100" class="me-4" onerror="this.style.display='none'">
+    <div class="header d-flex border-bottom border-danger pb-3">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/0/03/Logo_BV_Ung_B%C6%B0%E1%BB%9Bu_TP.HCM.png" width="70" class="me-3" style="object-fit: contain;">
         <div>
-            <h3 class="fw-bold text-danger m-0">SỞ Y TẾ TP. HỒ CHÍ MINH</h3>
-            <h3 class="fw-bold text-danger m-0">BỆNH VIỆN UNG BƯỚU - CS2</h3>
-            <h5 class="text-secondary fw-bold mt-1">🧧 KHOA XÉT NGHIỆM - XUÂN BÍNH NGỌ 2026</h5>
+            <h5 class="m-0 text-danger fw-bold">BỆNH VIỆN UNG BƯỚU - CS2</h5>
+            <p class="m-0 text-secondary fw-bold small">🧧 KHOA XÉT NGHIỆM - XUÂN BÍNH NGỌ 2026</p>
         </div>
     </div>
 
     <h1 class="title">BÁO CÁO HIỆU SUẤT</h1>
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="no-print">
         <div class="d-flex align-items-center gap-2">
-            <b class="text-danger">Lịch Báo Cáo:</b>
-            <input type="text" id="datePicker" class="form-control text-center fw-bold border-danger shadow-sm" style="width:160px; border-radius: 20px;">
+            <b class="text-danger small">LỊCH:</b>
+            <input type="text" id="datePicker" class="form-control form-control-sm text-center fw-bold shadow-sm" style="width:130px;">
         </div>
-        <div>
-            <div id="authArea"><input type="password" id="passInput" autocomplete="off"></div>
+        <div class="d-flex align-items-center">
+            <input type="password" id="passInput" title="Bấm phím Cách để nhập">
             <div id="editArea" style="display:none">
-                <button id="btnSave" onclick="saveData()" class="btn btn-danger fw-bold rounded-pill px-4 shadow-sm">LƯU DỮ LIỆU</button>
-                <button onclick="lock()" class="btn btn-outline-secondary rounded-pill ms-2">ĐÓNG</button>
+                <button onclick="saveData()" id="btnSave" class="btn btn-danger btn-sm fw-bold px-3">LƯU DỮ LIỆU</button>
+                <button onclick="lock()" class="btn btn-outline-secondary btn-sm ms-2">HỦY</button>
             </div>
         </div>
     </div>
 
-    <table class="table">
+    <table class="table table-bordered">
         <thead>
             <tr>
                 <th width="8%">STT</th>
                 <th>Tên Hệ Thống / Thiết Bị</th>
-                <th width="20%">Model</th>
-                <th width="18%">Số Lượng</th>
+                <th width="20%">Số Lượng</th>
             </tr>
         </thead>
-        <tbody id="tableBody"></tbody>
+        <tbody id="tableBody">
+            <tr><td class="text-center">1</td><td>Hệ thống xét nghiệm sinh hóa - miễn dịch (24d)</td><td><input type="number" id="val-PT100674" class="input-number" value="0" readonly oninput="calculateTotal()" onfocus="this.select()"></td></tr>
+            <tr><td class="text-center">2</td><td>Máy đếm tế bào dòng chảy (NAVIOS)</td><td><input type="number" id="val-PT100673" class="input-number" value="0" readonly oninput="calculateTotal()" onfocus="this.select()"></td></tr>
+            <tr><td class="text-center">3</td><td>Máy phân tích huyết học tự động (DxH 800)</td><td><input type="number" id="val-PT100661" class="input-number" value="0" readonly oninput="calculateTotal()" onfocus="this.select()"></td></tr>
+            <tr><td class="text-center">4</td><td>Máy phân tích miễn dịch tự động (DxI 800)</td><td><input type="number" id="val-PT100663" class="input-number" value="0" readonly oninput="calculateTotal()" onfocus="this.select()"></td></tr>
+        </tbody>
         <tfoot>
-            <tr style="background:#fff5f5">
-                <td colspan="3" class="text-end fw-bold text-danger fs-5">TỔNG CỘNG HIỆU SUẤT:</td>
-                <td id="totalValue" class="text-center fw-bold text-danger fs-2">0</td>
+            <tr class="table-warning">
+                <td colspan="2" class="text-end fw-bold text-danger">TỔNG CỘNG:</td>
+                <td id="totalValue" class="text-center fw-bold fs-3 text-danger">0</td>
             </tr>
         </tfoot>
     </table>
-
-    <div class="footer-date">Ngày <span id="dDay">..</span> tháng <span id="dMonth">..</span> năm 2026</div>
+    <div class="text-end mt-3 fw-bold text-danger small">Ngày <span id="dDay">..</span> tháng <span id="dMonth">..</span> năm 2026</div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/vn.js"></script>
-
 <script>
-    // 1. CẤU HÌNH FIREBASE
     const firebaseConfig = { databaseURL: "https://hautruong3339-c2db4-default-rtdb.firebaseio.com/" };
     firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
+    const db = firebase.database();
 
-    // 2. BIẾN TOÀN CỤC
-    let isEditing = false;
+    const machineIDs = ["PT100674", "PT100673", "PT100661", "PT100663"];
     let lastDateKey = "";
-    const machines = [
-        { id: "PT100674", ten: "Hệ thống xét nghiệm sinh hóa - miễn dịch tự động", model: "24d" },
-        { id: "PT100673", ten: "Máy đếm tế bào dòng chảy (flow cytometry)", model: "NAVIOS" },
-        { id: "PT100661", ten: "Máy phân tích huyết học tự động ≥ 50 thông số", model: "DxH 800" },
-        { id: "PT100663", ten: "Máy phân tích miễn dịch tự động ≥ 150 test/giờ", model: "DxI 800" }
-    ];
 
-    // 3. THEO DÕI KẾT NỐI
-    database.ref(".info/connected").on("value", (snap) => {
-        const status = document.getElementById('conn-status');
-        if (snap.val() === true) {
-            status.innerText = "● Đã kết nối"; status.className = "online";
-        } else {
-            status.innerText = "○ Mất kết nối"; status.className = "offline";
-        }
+    // 1. Theo dõi kết nối
+    db.ref(".info/connected").on("value", s => {
+        const light = document.getElementById('status-light');
+        light.style.background = s.val() ? "#28a745" : "#dc3545";
+        light.innerText = s.val() ? "Đã kết nối" : "Mất mạng";
     });
 
-    // 4. KHỞI TẠO APP
-    function initApp() {
-        const fp = flatpickr("#datePicker", {
-            locale: "vn", dateFormat: "d/m/Y", defaultDate: "today",
-            onChange: (selectedDates) => {
-                lastDateKey = flatpickr.formatDate(selectedDates[0], "Y-m-d");
-                loadData(lastDateKey);
+    // 2. Khởi tạo
+    function init() {
+        flatpickr("#datePicker", {
+            defaultDate: "today", dateFormat: "d/m/Y",
+            onChange: (dates) => {
+                lastDateKey = dates[0].toISOString().split('T')[0];
+                loadDataFromFirebase();
             }
         });
-        lastDateKey = flatpickr.formatDate(new Date(), "Y-m-d");
-        loadData(lastDateKey);
-        startBlossom();
+        lastDateKey = new Date().toISOString().split('T')[0];
+        loadDataFromFirebase();
     }
 
-    // 5. TẢI DỮ LIỆU (Dùng .once để chống giật trang)
-    function loadData(dateKey) {
-        const [y, m, d] = dateKey.split('-');
+    // 3. Tải dữ liệu (Chỉ tải giá trị, không vẽ lại bảng)
+    function loadDataFromFirebase() {
+        const [y, m, d] = lastDateKey.split('-');
         document.getElementById('dDay').innerText = d;
         document.getElementById('dMonth').innerText = m;
-        
-        database.ref('reports/' + dateKey).once('value', (s) => {
-            renderTable(s.val() || {});
-        });
-    }
 
-    // 6. HIỂN THỊ BẢNG (Chống nhảy ô)
-    function renderTable(data) {
-        const body = document.getElementById('tableBody');
-        let html = "";
-        machines.forEach((m, i) => {
-            let val = data[m.id] || "0";
-            html += `<tr>
-                <td class="text-center">${i+1}</td>
-                <td class="px-3">${m.ten}</td>
-                <td class="text-center text-secondary">${m.model}</td>
-                <td>
-                    <input type="number" id="input-${i}" class="input-number" 
-                    value="${val}" ${!isEditing ? 'readonly' : ''} 
-                    oninput="calculateTotal()" onfocus="this.select()">
-                </td>
-            </tr>`;
+        db.ref('reports/' + lastDateKey).once('value', (s) => {
+            const data = s.val() || {};
+            machineIDs.forEach(id => {
+                document.getElementById('val-' + id).value = data[id] || 0;
+            });
+            calculateTotal();
         });
-        body.innerHTML = html;
-        calculateTotal();
     }
 
     function calculateTotal() {
         let total = 0;
-        machines.forEach((_, i) => {
-            const input = document.getElementById('input-' + i);
-            if (input) total += (parseInt(input.value) || 0);
+        machineIDs.forEach(id => {
+            total += parseInt(document.getElementById('val-' + id).value) || 0;
         });
         document.getElementById('totalValue').innerText = total.toLocaleString('vi-VN');
     }
 
-    // 7. LƯU DỮ LIỆU
+    // 4. Mở khóa (FIX: Không load lại data, chỉ gỡ readonly)
+    function unlock() {
+        document.getElementById('editArea').style.display = "block";
+        machineIDs.forEach(id => {
+            document.getElementById('val-' + id).removeAttribute('readonly');
+        });
+        // Tự động focus vào ô đầu tiên sau khi mở khóa
+        document.getElementById('val-' + machineIDs[0]).focus();
+    }
+
+    function lock() {
+        document.getElementById('editArea').style.display = "none";
+        machineIDs.forEach(id => {
+            document.getElementById('val-' + id).setAttribute('readonly', true);
+        });
+        loadDataFromFirebase(); // Chỉ load lại khi bấm Hủy để trả về giá trị cũ
+    }
+
     function saveData() {
         const btn = document.getElementById('btnSave');
-        btn.disabled = true; btn.innerText = "ĐANG LƯU...";
-
+        btn.disabled = true;
         const update = {};
-        machines.forEach((m, i) => {
-            update[m.id] = document.getElementById('input-' + i).value || "0";
+        machineIDs.forEach(id => {
+            update[id] = document.getElementById('val-' + id).value || 0;
         });
 
-        database.ref('reports/' + lastDateKey).set(update).then(() => {
-            alert("Đã lưu dữ liệu thành công!");
-            btn.disabled = false; btn.innerText = "LƯU DỮ LIỆU";
-            lock();
-        }).catch(e => {
-            alert("Lỗi lưu dữ liệu: " + e.message);
+        db.ref('reports/' + lastDateKey).set(update).then(() => {
+            alert("Đã lưu thành công!");
             btn.disabled = false;
+            lock();
         });
     }
 
-    // 8. BẢO MẬT & MỞ KHÓA (Bấm Space tại ô ẩn)
-    function unlock() { 
-        isEditing = true; 
-        document.getElementById('authArea').style.display = "none"; 
-        document.getElementById('editArea').style.display = "block";
-        loadData(lastDateKey); 
-    }
-    
-    function lock() { 
-        isEditing = false; 
-        document.getElementById('authArea').style.display = "block"; 
-        document.getElementById('editArea').style.display = "none";
-        document.getElementById('passInput').value = "";
-        loadData(lastDateKey); 
-    }
-
+    // Phím tắt: Cách (Space) tại ô mật khẩu để nhập
     document.getElementById('passInput').addEventListener('keydown', (e) => {
         if (e.code === "Space") { e.preventDefault(); unlock(); }
     });
 
-    // 9. HIỆU ỨNG HOA MAI (Tối ưu nhẹ cho máy yếu)
-    function startBlossom() {
-        const canvas = document.getElementById('blossom-canvas');
-        const ctx = canvas.getContext('2d');
-        let petals = [];
-        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-        window.addEventListener('resize', resize); resize();
-        class Petal {
-            constructor() { this.reset(); this.y = Math.random() * canvas.height; }
-            reset() {
-                this.x = Math.random() * canvas.width; this.y = -20;
-                this.s = Math.random() * 5 + 3; this.v = Math.random() * 1.2 + 0.5;
-                this.a = Math.random() * 360;
-            }
-            draw() {
-                ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.a * Math.PI/180);
-                ctx.fillStyle = "#FFD700"; ctx.beginPath();
-                for(let i=0; i<5; i++) { ctx.rotate(72*Math.PI/180); ctx.ellipse(0, -this.s, this.s/1.5, this.s, 0, 0, 2*Math.PI); }
-                ctx.fill(); ctx.restore();
-            }
-            update() { this.y += this.v; this.x += Math.sin(this.y/50); if(this.y > canvas.height) this.reset(); }
-        }
-        for(let i=0; i<25; i++) petals.push(new Petal());
-        function anim() { ctx.clearRect(0,0,canvas.width, canvas.height); petals.forEach(p=>{p.update(); p.draw();}); requestAnimationFrame(anim); }
-        anim();
-    }
-
-    initApp();
+    init();
 </script>
 </body>
 </html>
