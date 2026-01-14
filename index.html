@@ -5,252 +5,229 @@
     <title>Báo Cáo Hiệu Suất - Xuân Bính Ngọ 2026</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/vn.js"></script>
+    
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
 
     <style>
         :root { --red: #b30000; --gold: #ffd700; --dark-red: #7a0000; }
-        
         body { 
             background: var(--dark-red); 
             font-family: "Times New Roman", Times, serif;
-            padding: 100px 20px;
+            padding: 80px 20px;
             background-image: url('https://www.transparenttextures.com/patterns/natural-paper.png');
             overflow-x: hidden;
         }
-
         #blossom-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; }
-
-        /* --- KHUNG TRANG TRÍ ÔNG ĐỒ --- */
-        .ong-do-container {
-            position: relative;
-            max-width: 1100px;
-            margin: auto;
-            background: #fff;
-            padding: 60px;
-            border: 12px solid var(--gold);
-            border-image: linear-gradient(to bottom right, #ffd700, #ff8c00, #ffd700) 1;
-            box-shadow: 0 0 100px rgba(0,0,0,0.8);
-            border-radius: 4px;
-        }
-
-        /* Hình thoi 4 góc - Căn giữa chữ tuyệt đối */
-        .hinh-thoi {
-            position: absolute; width: 100px; height: 100px; background: var(--red);
-            border: 4px solid var(--gold); transform: rotate(45deg);
-            display: flex; align-items: center; justify-content: center; z-index: 100;
-            box-shadow: 2px 2px 15px rgba(0,0,0,0.5);
-        }
-        .hinh-thoi span { 
-            transform: rotate(-45deg); color: var(--gold); 
-            font-weight: bold; font-size: 1.4rem; text-align: center;
-            display: block; width: 100%;
-        }
-        .top-l { top: -60px; left: -60px; }
-        .top-r { top: -60px; right: -60px; }
-        .bot-l { bottom: -60px; left: -60px; }
-        .bot-r { bottom: -60px; right: -60px; }
-
-        /* Câu đối đỏ - Căn giữa chữ */
-        .cau-doi {
-            position: absolute; top: 120px; width: 80px; background: var(--red);
-            border: 3px solid var(--gold); color: var(--gold); 
-            padding: 30px 0; font-size: 2rem; font-weight: bold;
-            display: flex; align-items: center; justify-content: center;
-            writing-mode: vertical-rl; text-orientation: upright;
-            box-shadow: 5px 5px 25px rgba(0,0,0,0.4);
-        }
-        .cau-doi-l { left: -110px; }
-        .cau-doi-r { right: -110px; }
-
-        .header { display: flex; align-items: center; border-bottom: 3px solid var(--red); padding-bottom: 25px; margin-bottom: 40px; }
-        .logo { width: 120px; margin-right: 30px; }
-        .hospital-info h3 { color: var(--dark-red); margin: 0; font-size: 1.6rem; font-weight: bold; text-transform: uppercase; }
-        .hospital-info h4 { color: var(--red); margin: 5px 0 0; font-size: 1.3rem; font-weight: bold; }
-
-        .title { 
-            text-align: center; color: var(--red); font-weight: bold; 
-            font-size: 3rem; text-shadow: 2px 2px var(--gold); 
-            text-transform: uppercase; margin: 30px 0 50px; 
-        }
-
-        /* --- BẢNG ĐỒNG BỘ FONT TIMES --- */
-        .table { border: 2.5px solid var(--red); }
-        .table thead th { 
-            background: var(--red); color: #fff; text-align: center; 
-            vertical-align: middle !important; padding: 20px 10px; border: 1.5px solid var(--gold);
-            font-size: 1.2rem; text-transform: uppercase;
-        }
-        .table td { 
-            vertical-align: middle; text-align: center; padding: 15px; 
-            border: 1px solid var(--red); font-weight: bold; font-size: 1.2rem;
-        }
-        .table td:nth-child(3) { text-align: left; padding-left: 20px; } 
         
-        .input-number { 
-            width: 100%; border: none; text-align: center; 
-            font-size: 1.8rem; font-weight: bold; background: #fffcf0; 
-            color: var(--red); border-radius: 5px;
+        .ong-do-container {
+            position: relative; max-width: 1050px; margin: auto; background: #fff;
+            padding: 50px; border: 10px solid var(--gold);
+            border-image: linear-gradient(to bottom right, #ffd700, #ff8c00, #ffd700) 1;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
         }
 
-        /* Lịch ô vuông đỏ */
-        .flatpickr-day.today {
-            background: var(--red) !important; color: #fff !important;
-            border-radius: 4px !important; border: 2px solid var(--gold) !important;
+        /* Trạng thái kết nối */
+        #connection-status {
+            position: fixed; top: 10px; right: 10px; padding: 5px 15px;
+            border-radius: 20px; font-weight: bold; font-size: 0.9rem; z-index: 10000;
         }
+        .online { background: #28a745; color: white; }
+        .offline { background: #dc3545; color: white; animation: blink 1s infinite; }
+        @keyframes blink { 50% { opacity: 0.5; } }
 
-        #passInput { width: 50px; border: none; background: transparent; }
-        .footer-date { color: var(--red); text-align: right; margin-top: 40px; font-size: 1.4rem; font-weight: bold; }
+        /* Các thành phần trang trí */
+        .hinh-thoi {
+            position: absolute; width: 80px; height: 80px; background: var(--red);
+            border: 3px solid var(--gold); transform: rotate(45deg);
+            display: flex; align-items: center; justify-content: center; z-index: 100;
+        }
+        .hinh-thoi span { transform: rotate(-45deg); color: var(--gold); font-weight: bold; font-size: 1.1rem; }
+        .top-l { top: -45px; left: -45px; } .top-r { top: -45px; right: -45px; }
+        .bot-l { bottom: -45px; left: -45px; } .bot-r { bottom: -45px; right: -45px; }
+
+        .title { text-align: center; color: var(--red); font-weight: bold; font-size: 2.5rem; text-shadow: 1px 1px var(--gold); margin: 20px 0; }
+        .table { border: 2px solid var(--red); }
+        .table thead th { background: var(--red); color: #fff; text-align: center; border: 1px solid var(--gold); }
+        .input-number { width: 100%; border: none; text-align: center; font-size: 1.5rem; font-weight: bold; color: var(--red); background: #fffcf0; }
+        #passInput { width: 40px; border: none; background: transparent; cursor: default; }
     </style>
 </head>
 <body>
 
+<div id="connection-status" class="offline">Đang kiểm tra kết nối...</div>
 <canvas id="blossom-canvas"></canvas>
 
-<div class="ong-do-container" id="mainReport">
+<div class="ong-do-container">
     <div class="hinh-thoi top-l"><span>CHÚC</span></div>
     <div class="hinh-thoi top-r"><span>MỪNG</span></div>
     <div class="hinh-thoi bot-l"><span>NĂM</span></div>
     <div class="hinh-thoi bot-r"><span>MỚI</span></div>
 
-    <div class="cau-doi cau-doi-l">Vạn Sự Như Ý</div>
-    <div class="cau-doi cau-doi-r">An Khang Thịnh Vượng</div>
-
-    <div class="header">
-        <img src="logo.png" onerror="this.src='OIP.webp'" class="logo">
-        <div class="hospital-info">
-            <h3>SỞ Y TẾ TP. HỒ CHÍ MINH</h3>
-            <h3>BỆNH VIỆN UNG BƯỚU - CS2</h3>
-            <h4>🧧 KHOA XÉT NGHIỆM - XUÂN BÍNH NGỌ 2026</h4>
+    <div class="header d-flex align-items-center border-bottom border-danger pb-3 mb-4">
+        <img src="https://via.placeholder.com/100" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/0/03/Logo_BV_Ung_B%C6%B0%E1%BB%9Bu_TP.HCM.png'" width="100" class="me-3">
+        <div>
+            <h4 class="m-0 text-danger fw-bold">BỆNH VIỆN UNG BƯỚU - CS2</h4>
+            <h5 class="m-0 text-secondary">🧧 KHOA XÉT NGHIỆM - XUÂN BÍNH NGỌ 2026</h5>
         </div>
     </div>
 
-    <h1 class="title">BÁO CÁO HIỆU SUẤT XÉT NGHIỆM</h1>
+    <h1 class="title">BÁO CÁO HIỆU SUẤT</h1>
 
-    <div class="d-flex justify-content-between align-items-center mb-5 no-print">
+    <div class="d-flex justify-content-between align-items-center mb-4">
         <div class="d-flex align-items-center gap-2">
-            <b class="text-danger fs-5">Lịch Báo Cáo:</b>
-            <input type="text" id="datePicker" class="form-control text-center fw-bold border-danger shadow-sm" style="width:180px; border-radius: 20px;">
+            <b>Ngày báo cáo:</b>
+            <input type="text" id="datePicker" class="form-control text-center fw-bold border-danger" style="width:150px;">
         </div>
-        <div id="authArea"><input type="password" id="passInput"></div>
-        <div id="editArea" style="display:none">
-            <button onclick="saveData()" class="btn btn-danger fw-bold rounded-pill px-4 shadow-sm">Lưu Dữ Liệu</button>
-            <button onclick="lock()" class="btn btn-outline-secondary rounded-pill ms-2">Đóng</button>
+        <div>
+            <div id="authArea"><input type="password" id="passInput"></div>
+            <div id="editArea" style="display:none">
+                <button onclick="saveData()" class="btn btn-danger btn-sm px-4">LƯU DỮ LIỆU</button>
+                <button onclick="lock()" class="btn btn-outline-secondary btn-sm">ĐÓNG</button>
+            </div>
         </div>
     </div>
 
-    <table class="table">
+    <table class="table table-bordered">
         <thead>
             <tr>
-                <th width="7%">STT</th>
-                <th width="12%">Mã Máy</th>
+                <th width="5%">STT</th>
                 <th>Tên Hệ Thống / Thiết Bị</th>
-                <th width="18%">Model</th>
+                <th width="20%">Model</th>
                 <th width="15%">Số Lượng</th>
             </tr>
         </thead>
         <tbody id="tableBody"></tbody>
         <tfoot>
-            <tr style="background:#fff5f5">
-                <td colspan="4" class="text-end fw-bold" style="color:var(--red); font-size: 1.4rem; padding-right: 30px;">TỔNG CỘNG HIỆU SUẤT XUÂN</td>
-                <td id="totalValue" class="text-center fw-bold text-danger" style="font-size: 2rem;">0</td>
+            <tr class="table-warning">
+                <td colspan="3" class="text-end fw-bold text-danger">TỔNG CỘNG:</td>
+                <td id="totalValue" class="text-center fw-bold fs-4 text-danger">0</td>
             </tr>
         </tfoot>
     </table>
-    <div class="footer-date">Ngày <span id="dDay">..</span> tháng <span id="dMonth">..</span> năm 2026</div>
+    <div class="text-end mt-3 fw-bold text-danger">Ngày <span id="dDay">..</span> tháng <span id="dMonth">..</span> năm 2026</div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/vn.js"></script>
+
 <script>
-    const firebaseConfig = { databaseURL: "https://hautruong3339-c2db4-default-rtdb.firebaseio.com/" };
+    // 1. CẤU HÌNH FIREBASE (Đã cập nhật URL của bạn)
+    const firebaseConfig = {
+        databaseURL: "https://hautruong3339-c2db4-default-rtdb.firebaseio.com/"
+    };
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
-    let isEditing = false;
-    let calendarInstance;
-    let lastDateKey = "";
+    // 2. THEO DÕI KẾT NỐI
+    const statusDiv = document.getElementById('connection-status');
+    database.ref(".info/connected").on("value", (snap) => {
+        if (snap.val() === true) {
+            statusDiv.innerText = "● Đã kết nối Firebase";
+            statusDiv.className = "online";
+        } else {
+            statusDiv.innerText = "○ Mất kết nối server";
+            statusDiv.className = "offline";
+        }
+    });
+
+    // 3. KHỞI TẠO DỮ LIỆU MÁY MÓC
     const machines = [
-        { id: "PT100674", ten: "Hệ thống xét nghiệm sinh hóa - miễn dịch tự động và thiết bị hỗ trợ", model: "24d" },
-        { id: "PT100673", ten: "Máy đếm tế bào dòng chảy (flow cytometry)", model: "NAVIOS (8 COLOR/2LASER)" },
-        { id: "PT100661", ten: "Máy phân tích huyết học tự động ≥ 50 thông số", model: "DxH 800" },
-        { id: "PT100663", ten: "Máy phân tích miễn dịch tự động ≥ 150 test/giờ", model: "DxI 800" }
+        { id: "PT100674", ten: "Hệ thống xét nghiệm sinh hóa - miễn dịch", model: "24d" },
+        { id: "PT100673", ten: "Máy đếm tế bào dòng chảy", model: "NAVIOS" },
+        { id: "PT100661", ten: "Máy phân tích huyết học tự động", model: "DxH 800" },
+        { id: "PT100663", ten: "Máy phân tích miễn dịch tự động", model: "DxI 800" }
     ];
 
-    // --- HIỆU ỨNG HOA MAI RƠI ---
+    let isEditing = false;
+    let lastDateKey = "";
+    let calendar;
+
+    function init() {
+        calendar = flatpickr("#datePicker", {
+            locale: "vn", dateFormat: "d/m/Y", defaultDate: "today",
+            onChange: (dates) => {
+                lastDateKey = flatpickr.formatDate(dates[0], "Y-m-d");
+                loadData(lastDateKey);
+            }
+        });
+        lastDateKey = flatpickr.formatDate(new Date(), "Y-m-d");
+        loadData(lastDateKey);
+        animate();
+    }
+
+    function loadData(dateKey) {
+        const [y, m, d] = dateKey.split('-');
+        document.getElementById('dDay').innerText = d;
+        document.getElementById('dMonth').innerText = m;
+        
+        database.ref('reports/' + dateKey).on('value', (s) => {
+            renderTable(s.val() || {});
+        });
+    }
+
+    function renderTable(data) {
+        const body = document.getElementById('tableBody');
+        body.innerHTML = "";
+        machines.forEach((m, i) => {
+            let val = data[m.id] || 0;
+            body.innerHTML += `
+                <tr>
+                    <td class="text-center">${i+1}</td>
+                    <td>${m.ten}</td>
+                    <td class="text-center">${m.model}</td>
+                    <td>
+                        <input type="number" id="input-${i}" class="input-number" 
+                        value="${val}" ${!isEditing ? 'readonly' : ''} 
+                        oninput="calculateTotal()">
+                    </td>
+                </tr>`;
+        });
+        calculateTotal();
+    }
+
+    function calculateTotal() {
+        let total = 0;
+        machines.forEach((_, i) => {
+            const v = document.getElementById('input-' + i).value;
+            total += parseInt(v) || 0;
+        });
+        document.getElementById('totalValue').innerText = total.toLocaleString('vi-VN');
+    }
+
+    function saveData() {
+        const data = {};
+        machines.forEach((m, i) => {
+            data[m.id] = document.getElementById('input-' + i).value || 0;
+        });
+        database.ref('reports/' + lastDateKey).set(data)
+            .then(() => { alert("Lưu thành công!"); lock(); })
+            .catch((e) => alert("Lỗi: " + e.message));
+    }
+
+    // Mật mã mở khóa: Nhấn phím Cách (Space) khi đang ở ô mật khẩu (để trống)
+    function unlock() { isEditing = true; document.getElementById('authArea').style.display="none"; document.getElementById('editArea').style.display="block"; loadData(lastDateKey); }
+    function lock() { isEditing = false; document.getElementById('authArea').style.display="block"; document.getElementById('editArea').style.display="none"; loadData(lastDateKey); }
+    
+    document.getElementById('passInput').addEventListener('keydown', (e) => {
+        if (e.code === "Space") { e.preventDefault(); unlock(); }
+    });
+
+    // Hiệu ứng hoa rơi (giản lược)
     const canvas = document.getElementById('blossom-canvas');
     const ctx = canvas.getContext('2d');
     let petals = [];
     function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
     window.addEventListener('resize', resize); resize();
     class Petal {
-        constructor() { this.reset(); this.y = Math.random() * canvas.height; }
-        reset() {
-            this.x = Math.random() * canvas.width; this.y = -20;
-            this.size = Math.random() * 8 + 6; this.speed = Math.random() * 1.5 + 0.8;
-            this.angle = Math.random() * 360; this.spin = Math.random() * 2 - 1;
-        }
-        draw() {
-            ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.angle * Math.PI / 180);
-            ctx.beginPath(); ctx.fillStyle = "#FFD700"; 
-            for(let i=0; i<5; i++) { ctx.rotate(72 * Math.PI / 180); ctx.ellipse(0, -this.size/2, this.size/2, this.size, 0, 0, 2 * Math.PI); }
-            ctx.fill(); ctx.beginPath(); ctx.fillStyle = "#FF4500"; ctx.arc(0, 0, this.size/4, 0, 2 * Math.PI); ctx.fill(); ctx.restore();
-        }
-        update() { this.y += this.speed; this.x += Math.sin(this.y / 50); this.angle += this.spin; if (this.y > canvas.height) this.reset(); }
+        constructor() { this.x = Math.random()*canvas.width; this.y = Math.random()*canvas.height; this.s = Math.random()*5+2; this.v = Math.random()*2+1; }
+        draw() { ctx.fillStyle = "#FFD700"; ctx.beginPath(); ctx.arc(this.x, this.y, this.s, 0, Math.PI*2); ctx.fill(); }
+        update() { this.y += this.v; if(this.y > canvas.height) this.y = -10; }
     }
-    for(let i=0; i<45; i++) petals.push(new Petal());
-    function animate() { ctx.clearRect(0, 0, canvas.width, canvas.height); petals.forEach(p => { p.update(); p.draw(); }); requestAnimationFrame(animate); }
-    animate();
+    for(let i=0; i<30; i++) petals.push(new Petal());
+    function animate() { ctx.clearRect(0,0,canvas.width, canvas.height); petals.forEach(p=>{p.update(); p.draw();}); requestAnimationFrame(animate); }
 
-    // --- LOGIC DỮ LIỆU ---
-    function initApp() {
-        const today = new Date();
-        calendarInstance = flatpickr("#datePicker", {
-            locale: "vn", dateFormat: "d/m/Y", defaultDate: today,
-            onChange: (selectedDates) => {
-                const dateKey = calendarInstance.formatDate(selectedDates[0], "Y-m-d");
-                lastDateKey = dateKey; loadData(dateKey);
-            }
-        });
-        lastDateKey = calendarInstance.formatDate(today, "Y-m-d");
-        loadData(lastDateKey);
-    }
-
-    function loadData(dateKey) {
-        const [y, m, d] = dateKey.split('-');
-        document.getElementById('dDay').innerText = d; document.getElementById('dMonth').innerText = m;
-        database.ref('reports/' + dateKey).once('value', (s) => renderTable(s.val() || {}, s.exists()));
-    }
-
-    function renderTable(data, hasContent) {
-        const body = document.getElementById('tableBody'); body.innerHTML = "";
-        machines.forEach((mach, i) => {
-            const idx = i + 1; let val = data[mach.id] || "0";
-            body.innerHTML += `<tr><td class="text-center">${idx}</td><td class="text-center text-muted"><small>${mach.id}</small></td><td class="px-3">${mach.ten}</td><td class="text-center text-secondary">${mach.model}</td><td><input type="number" id="row-input-${idx}" class="input-number" value="${val}" ${!isEditing ? 'readonly' : ''} onfocus="handleFocus(this)" oninput="calculateTotal()"></td></tr>`;
-        });
-        calculateTotal();
-    }
-
-    function handleFocus(el) { if (el.value === "0") el.value = ""; setTimeout(() => el.select(), 10); }
-    function calculateTotal() {
-        let total = 0; for(let i=1; i<=machines.length; i++) { const input = document.getElementById('row-input-' + i); if (input) total += (parseInt(input.value) || 0); }
-        document.getElementById('totalValue').innerText = total.toLocaleString('vi-VN');
-    }
-
-    function saveData() {
-        const update = {}; machines.forEach((m, i) => { update[m.id] = document.getElementById('row-input-' + (i+1)).value || "0"; });
-        database.ref('reports/' + lastDateKey).set(update).then(() => { alert("Đã lưu thành công!"); lock(); });
-    }
-
-    function unlock() { isEditing = true; document.getElementById('authArea').style.display = "none"; document.getElementById('editArea').style.display = "block"; loadData(lastDateKey); }
-    function lock() { isEditing = false; document.getElementById('authArea').style.display = "block"; document.getElementById('editArea').style.display = "none"; document.getElementById('passInput').value = ""; loadData(lastDateKey); }
-
-    document.addEventListener('keydown', (e) => {
-        const pass = document.getElementById('passInput');
-        if (document.activeElement === pass && e.code === "Space") { e.preventDefault(); if (pass.value === "") unlock(); else pass.value = ""; }
-    });
-
-    initApp();
+    init();
 </script>
 </body>
 </html>
